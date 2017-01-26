@@ -28,6 +28,12 @@ let package = Package(
         //         "Mail"
         //     ]
         // ),
+        Target(
+            name: "SendGridClient",
+            dependencies: [
+                "Mail"
+            ]
+        ),
         // Target(
         //     name: "SMTPExample",
         //     dependencies: [
