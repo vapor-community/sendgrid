@@ -1,7 +1,6 @@
-import Mail
 import Foundation
 
-public final class Email {
+public final class SendGridEmail {
 
     /*
         Array of personalization 'envelopes' for this email.
@@ -16,11 +15,11 @@ public final class Email {
     /*
         If set, the first 'personalization' will be sent BCC to this address
     */
-    public let bccFirst: EmailAddress?
+    public var bccFirst: EmailAddress?
     /*
         Email reply-to address
     */
-    public let replyTo: EmailAddress?
+    public var replyTo: EmailAddress?
     /*
         Email subject, which can be overwritten by each personalization
     */
@@ -99,9 +98,13 @@ public final class Email {
     */
     public var googleAnalytics: GoogleAnalytics
 
-    // public init(templateId: String, ...) // using a template
+    // public init(from: EmailAddressRepresentable, to: EmailAddressRepresentable..., subject: String, body: EmailBodyRepresentable, attachments: [EmailAttachmentRepresentable] = []) {
 
-    // public init(...) // body content
+    public init(from: EmailAddressRepresentable, subject: String) {
+        personalizations = []
+        self.from = from
+        self.subject = subject
+        // TODO: ... complete.
+    }
 
-    // public init(from: Mail.Email) // convert from a basic Vapor Email
 }
