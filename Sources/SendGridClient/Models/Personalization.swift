@@ -6,30 +6,34 @@ public struct Personalization {
     /*
         The email recipients
     */
-    let to: [EmailAddress]
+    public let to: [EmailAddress]
     /*
         The email copy recipients
     */
-    let cc: [EmailAddress]?
+    public let cc: [EmailAddress] = []
     /*
         The email blind copy recipients
     */
-    let bcc: [EmailAddress]?
+    public let bcc: [EmailAddress] = []
     /*
         The email subject, overriding that of the Email, if set
     */
-    let subject: String?
+    public let subject: String? = nil
     /*
         Custom headers
     */
-    let headers: [String: String]?
+    public let headers: [String: String] = [:]
     /*
         Custom substitutions in the format ["tag": "value"]
     */
-    let substitutions: [String: String]?
+    public let substitutions: [String: String] = [:]
     /*
         Date to send the email, or `nil` if email to be sent immediately
     */
-    let sendAt: Date?
+    public let sendAt: Date? = nil
+
+    public init(to: [EmailAddress]) {
+        self.to = to
+    }
 
 }

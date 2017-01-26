@@ -14,7 +14,7 @@ public final class MailClient {
         client = try clientProtocol.make(scheme: "https", host: "api.sendgrid.com")
     }
 
-    public func send(_ emails: [Email]) throws {
+    public func send(_ emails: [SendGridEmail]) throws {
         emails.forEach { email in
             // use the client to send off each email as JSON
             print("Sending: \(email)")
@@ -38,7 +38,7 @@ extension MailClient: MailClientProtocol {
 
   public func send(_ emails: [Mail.Email]) throws {
       // Convert to SendGrid Emails and then send
-      let sgEmails = emails.map { Email(from: $0 ) }
+      let sgEmails = emails.map { ContentEmail(from: $0 ) }
       try send(sgEmails)
   }
 
