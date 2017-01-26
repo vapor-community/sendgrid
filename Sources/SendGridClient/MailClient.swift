@@ -38,7 +38,7 @@ extension MailClient: MailClientProtocol {
 
   public func send(_ emails: [Mail.Email]) throws {
       // Convert to SendGrid Emails and then send
-      let sgEmails = emails.map { ContentEmail(from: $0 ) }
+      let sgEmails = emails.map { SendGridEmail(from: $0 ) }
       try send(sgEmails)
   }
 

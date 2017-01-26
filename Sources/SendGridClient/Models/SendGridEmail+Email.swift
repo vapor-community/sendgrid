@@ -1,6 +1,6 @@
 import Mail
 
-extension ContentEmail {
+extension SendGridEmail {
 
     /*
         Convert a basic Vapor Mail.Email into a SendGridEmail

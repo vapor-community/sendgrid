@@ -1,7 +1,7 @@
 import Foundation
 import Mail
 
-public class SendGridEmail {
+public final class SendGridEmail {
 
     /*
         Array of personalization 'envelopes' for this email.
@@ -91,37 +91,38 @@ public class SendGridEmail {
     */
     public var googleAnalytics: GoogleAnalytics? = nil
 
-    // public init(from: EmailAddressRepresentable, to: EmailAddressRepresentable..., subject: String, body: EmailBodyRepresentable, attachments: [EmailAttachmentRepresentable] = []) {
-
-    internal init(from: EmailAddressRepresentable, subject: String) {
-        personalizations = []
-        self.from = from.emailAddress
-        self.subject = subject
-        // TODO: ... complete.
-    }
-
-}
-
-public final class TemplateEmail: SendGridEmail {
     /*
         ID of a predefined template to use
     */
-    public let templateId: String
-
-    public init(from: EmailAddressRepresentable, subject: String, templateId: String) {
-        self.templateId = templateId
-        super.init(from: from, subject: subject)
-    }
-}
-
-public final class ContentEmail: SendGridEmail {
+    public let templateId: String?
     /*
-        Email body content. Can only be nil if `templateId` is set
+        Email body content. Can only be empty if `templateId` is set
     */
-    public var content: [EmailBody]
+    public var content: [EmailBody] = []
 
-    public init(from: EmailAddressRepresentable, subject: String, body: EmailBodyRepresentable) {
-        content = [body.emailBody]
-        super.init(from: from, subject: subject)
+
+    private init(from: EmailAddressRepresentable, subject: String, templateId: String?, body: EmailBodyRepresentable?) {
+        personalizations = []
+        self.from = from.emailAddress
+        self.subject = subject
+        self.templateId = templateId
+        if let body = body {
+            self.content = [body.emailBody]
+        }
     }
+
+    /*
+        Init from a template
+    */
+    public convenience init(from: EmailAddressRepresentable, subject: String, templateId: String, body: EmailBodyRepresentable?) {
+        self.init(from: from, subject: subject, templateId: templateId, body: body)
+    }
+
+    /*
+        Init from an email body
+    */
+    public convenience init(from: EmailAddressRepresentable, subject: String, body: EmailBodyRepresentable) {
+        self.init(from: from, subject: subject, templateId: nil, body: body)
+    }
+
 }
