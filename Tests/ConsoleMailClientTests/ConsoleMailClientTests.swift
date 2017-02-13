@@ -1,11 +1,13 @@
 import XCTest
 import Mail
 import ConsoleMailClient
+@testable import Vapor
 
 class ConsoleMailClientTests: XCTestCase {
     static let allTests = [
         ("testSendEmail", testSendEmail),
         ("testSendMultipleEmails", testSendMultipleEmails),
+        ("testProvider", testProvider),
     ]
 
     func testSendEmail() throws {
@@ -31,4 +33,27 @@ class ConsoleMailClientTests: XCTestCase {
         try mailer.send(emails)
     }
 
+    func testProvider() throws {
+        let drop = try makeDroplet()
+        try drop.addProvider(ConsoleMailClient.Provider.self)
+
+        let email = Email(from: "from@email.com",
+                          to: "to1@email.com", "to2@email.com",
+                          subject: "Email Subject",
+                          body: "Hello Email")
+        let attachment = EmailAttachment(filename: "dummy.data",
+                                         contentType: "dummy/data",
+                                         body: [1,2,3,4,5])
+        email.attachments.append(attachment)
+        try drop.mailer?.send(email)
+    }
+
+}
+
+extension ConsoleMailClientTests {
+    func makeDroplet() throws -> Droplet {
+        let drop = Droplet(arguments: ["/dummy/path/", "prepare"])
+        try drop.runCommands()
+        return drop
+    }
 }
