@@ -32,7 +32,7 @@ variable authentication per send, or templated emails. To make use of these
 features:
 
 ```Swift
-if let complicatedMailer = drop.mailer as? ComplicatedMailClient {
+if let complicatedMailer = try drop.mailer.make() as? ComplicatedMailClient {
     complicatedMailer.send(complicatedEmail)
 }
 ```
