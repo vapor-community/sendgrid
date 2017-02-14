@@ -1,6 +1,7 @@
 import XCTest
 import Mail
 import ConsoleMailClient
+import SMTP
 @testable import Vapor
 
 class ConsoleMailClientTests: XCTestCase {
@@ -12,7 +13,7 @@ class ConsoleMailClientTests: XCTestCase {
 
     func testSendEmail() throws {
         let mailer = ConsoleMailClient.MailClient()
-        let email = Email(from: "from@email.com",
+        let email = SMTP.Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
                           subject: "Email Subject",
                           body: "Hello Email")
@@ -26,18 +27,18 @@ class ConsoleMailClientTests: XCTestCase {
     func testSendMultipleEmails() throws {
         let mailer = ConsoleMailClient.MailClient()
         let emails = [
-            Email(from: "from@email.com", to: "to@email.com", subject: "Email1", body: "Email1 body"),
-            Email(from: "from@email.com", to: "to@email.com", subject: "Email2", body: "Email2 body"),
-            Email(from: "from@email.com", to: "to@email.com", subject: "Email3", body: "Email3 body"),
+            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email1", body: "Email1 body"),
+            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email2", body: "Email2 body"),
+            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email3", body: "Email3 body"),
         ]
         try mailer.send(emails)
     }
 
     func testProvider() throws {
         let drop = try makeDroplet()
-        try drop.addProvider(ConsoleMailClient.Provider.self)
+        try drop.addProvider(Mail.Provider<ConsoleMailClient.MailClient>.self)
 
-        let email = Email(from: "from@email.com",
+        let email = SMTP.Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
                           subject: "Email Subject",
                           body: "Hello Email")

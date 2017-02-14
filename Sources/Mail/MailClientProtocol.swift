@@ -1,3 +1,6 @@
+import SMTP
+import Vapor
+
 /**
     A simple protocol for any mechanism that allows the sending of emails.
 
@@ -20,6 +23,13 @@
 public protocol MailClientProtocol {
 
     /*
+        MailClient can be configured here. The value passed is `drop.config`,
+        as loaded by the Provider; it is up to the client to extract and store
+        configuration, and throw an error on any missing config.
+    */
+    static func configure(_ config: Config) throws
+
+    /*
         MailClient must be able to init without arguments. Store configuration
         loaded by the Provider in static vars on your MailClient, and throw if
         configuration has not been provided.
@@ -29,7 +39,7 @@ public protocol MailClientProtocol {
     /*
         Send one or more emails, re-using the same connection where appropriate
     */
-    func send(_ emails: [Email]) throws
+    func send(_ emails: [SMTP.Email]) throws
 
 }
 
@@ -45,21 +55,21 @@ extension MailClientProtocol {
     /*
         Send one or more emails, re-using the same connection where appropriate
     */
-    public func send(_ emails: Email...) throws {
+    public func send(_ emails: SMTP.Email...) throws {
         try send(emails)
     }
 
     /*
         Send one or more emails, re-using the same connection where appropriate
     */
-    public static func send(_ emails: [Email]) throws {
+    public static func send(_ emails: [SMTP.Email]) throws {
         try make().send(emails)
     }
 
     /*
         Send one or more emails, re-using the same connection where appropriate
     */
-    public static func send(_ emails: Email...) throws {
+    public static func send(_ emails: SMTP.Email...) throws {
         try send(emails)
     }
 

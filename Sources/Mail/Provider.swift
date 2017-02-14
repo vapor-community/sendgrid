@@ -1,8 +1,9 @@
 import Vapor
 
-public final class Provider: Vapor.Provider {
+public final class Provider<T: MailClientProtocol>: Vapor.Provider {
 
     public convenience init(config: Config) throws {
+        try T.configure(config)
         try self.init()
     }
 
@@ -10,9 +11,9 @@ public final class Provider: Vapor.Provider {
 
     public func boot(_ drop: Droplet) {
         if let existing = drop.mailer {
-            print("ConsoleMailClient will overwrite existing mailer: \(type(of: existing))")
+            print("\(String(describing: T.self)) will overwrite existing mailer: \(String(describing: existing))")
         }
-        drop.mailer = MailClient.self
+        drop.mailer = T.self
     }
 
     public func afterInit(_ drop: Droplet) {

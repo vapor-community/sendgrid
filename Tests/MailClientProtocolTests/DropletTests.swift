@@ -1,17 +1,36 @@
 import XCTest
 import Mail
+import SMTP
 @testable import Vapor
 
 private final class DummyMailClient: MailClientProtocol {
+
+    enum Error: Swift.Error {
+        case noConfiguration
+        case missingConfiguration(String)
+    }
+
+    static var configurationString = "not configured"
+
     var didSend = false
+
+    static func configure(_ config: Config) throws {
+        guard let c = config["dummy"]?.object else {
+            throw Error.noConfiguration
+        }
+        guard let string = c["string"]?.string else {
+            throw Error.missingConfiguration("string")
+        }
+        configurationString = string
+    }
 
     init() throws {}
 
-    func send(_ emails: [Mail.Email]) throws {
+    func send(_ emails: [SMTP.Email]) throws {
         didSend = true
     }
 
-    func nativeSend(_ email: Mail.Email) throws {
+    func nativeSend(_ email: SMTP.Email) throws {
         try send(email)
     }
 }
@@ -20,6 +39,7 @@ class DropletTests: XCTestCase {
     static let allTests = [
         ("testSendEmail", testSendEmail),
         ("testSendNativeEmail", testSendNativeEmail),
+        ("testProvider", testProvider),
     ]
 
     func testSendEmail() throws {
@@ -56,11 +76,22 @@ class DropletTests: XCTestCase {
         XCTAssertTrue(dummyClient.didSend)
     }
 
+    func testProvider() throws {
+        let config = Config([
+            "dummy": [
+                "string": "configured"
+            ],
+        ])
+        let drop = try makeDroplet(config: config)
+        try drop.addProvider(Mail.Provider<DummyMailClient>.self)
+        XCTAssertEqual(DummyMailClient.configurationString, "configured")
+    }
+
 }
 
 extension DropletTests {
-    func makeDroplet() throws -> Droplet {
-        let drop = Droplet(arguments: ["/dummy/path/", "prepare"])
+    func makeDroplet(config: Config? = nil) throws -> Droplet {
+        let drop = Droplet(arguments: ["/dummy/path/", "prepare"], config: config)
         try drop.runCommands()
         return drop
     }

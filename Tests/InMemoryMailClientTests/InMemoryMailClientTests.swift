@@ -1,6 +1,7 @@
 import XCTest
 import Mail
 import InMemoryMailClient
+import SMTP
 @testable import Vapor
 
 class InMemoryMailClientTests: XCTestCase {
@@ -12,7 +13,7 @@ class InMemoryMailClientTests: XCTestCase {
 
     func testSendEmail() throws {
         let mailer = InMemoryMailClient.MailClient()
-        let email = Email(from: "from@email.com",
+        let email = SMTP.Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
                           subject: "Email Subject",
                           body: "Hello Email")
@@ -29,9 +30,9 @@ class InMemoryMailClientTests: XCTestCase {
     func testSendMultipleEmails() throws {
         let mailer = InMemoryMailClient.MailClient()
         let emails = [
-            Email(from: "from@email.com", to: "to@email.com", subject: "Email1", body: "Email1 body"),
-            Email(from: "from@email.com", to: "to@email.com", subject: "Email2", body: "Email2 body"),
-            Email(from: "from@email.com", to: "to@email.com", subject: "Email3", body: "Email3 body"),
+            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email1", body: "Email1 body"),
+            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email2", body: "Email2 body"),
+            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email3", body: "Email3 body"),
         ]
         try mailer.send(emails)
 
@@ -43,9 +44,9 @@ class InMemoryMailClientTests: XCTestCase {
 
     func testProvider() throws {
         let drop = try makeDroplet()
-        try drop.addProvider(InMemoryMailClient.Provider.self)
+        try drop.addProvider(Mail.Provider<InMemoryMailClient.MailClient>.self)
 
-        let email = Email(from: "from@email.com",
+        let email = SMTP.Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
                           subject: "Email Subject",
                           body: "Hello Email")
