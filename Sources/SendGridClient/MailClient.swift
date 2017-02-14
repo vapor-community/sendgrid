@@ -1,5 +1,7 @@
 import HTTP
 import Mail
+import Vapor
+import Foundation
 
 /**
     SendGrid client
@@ -13,11 +15,26 @@ public final class MailClient {
         self.apiKey = apiKey
         client = try clientProtocol.make(scheme: "https", host: "api.sendgrid.com")
     }
+    
+
 
     public func send(_ emails: [SendGridEmail]) throws {
-        emails.forEach { email in
-            // use the client to send off each email as JSON
-            print("Sending: \(email)")
+        let headers: [HeaderKey: String] = [
+            "Authorization": "Bearer \(apiKey)",
+            "Content-Type": "application/json"
+        ]
+        
+        try emails.forEach { email in
+            let jsonData = try JSONSerialization.data(withJSONObject: email.toDictionary(), options: .prettyPrinted)
+            do {
+                let test = try client.post(path: "/v3/mail/send", headers: headers, body: Body(jsonData))
+                if(test.status.statusCode != 200 && test.status.statusCode != 202){
+                    let sendgridErrors: [SendgridError] = try test.json!.extract("errors")
+                    throw Abort.custom(status: test.status, message: sendgridErrors[0].message)
+                }
+            } catch let error {
+                throw error
+            }
         }
     }
 
