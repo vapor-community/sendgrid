@@ -1,4 +1,3 @@
-import Mail
 import SMTP
 import Vapor
 
@@ -6,7 +5,7 @@ import Vapor
     A development-only MailClient which does not send emails; rather, it
     stores them in the `sentEmails` property for debugging purposes.
 */
-public final class MailClient: MailClientProtocol {
+public final class InMemoryMailClient: MailClientProtocol {
 
     /**
         Every email 'sent' by this client is stored in this array.

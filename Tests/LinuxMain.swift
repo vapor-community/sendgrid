@@ -2,9 +2,7 @@
 
 import XCTest
 
-@testable import MailClientProtocolTests
-@testable import ConsoleMailClientTests
-@testable import InMemoryMailClientTests
+@testable import MailTests
 
 XCTMain([
     // MailClientProtocol Tests

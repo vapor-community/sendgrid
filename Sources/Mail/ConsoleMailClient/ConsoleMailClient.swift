@@ -1,5 +1,4 @@
 import Console
-import Mail
 import SMTP
 import Vapor
 
@@ -7,7 +6,7 @@ import Vapor
     A development-only MailClient which does not send emails; rather, it
     logs them to the console for debugging purposes.
 */
-public final class MailClient: MailClientProtocol {
+public final class ConsoleMailClient: MailClientProtocol {
 
     let console = Terminal(arguments: [])
     let style = ConsoleStyle.custom(.yellow)

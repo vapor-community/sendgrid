@@ -1,5 +1,5 @@
 import XCTest
-import Mail
+@testable import Mail
 import SMTP
 @testable import Vapor
 
