@@ -7,7 +7,7 @@ import Foundation
 /**
     SendGrid client
 */
-public final class SendGridClient: MailClientProtocol {
+public final class SendGridClient {
 
     static var defaultApiKey: String?
     static var defaultClient: ClientProtocol.Type?
@@ -15,39 +15,9 @@ public final class SendGridClient: MailClientProtocol {
     var apiKey: String
     var client: ClientProtocol
 
-    public static func configure(_ config: Settings.Config) throws {
-        guard let sg = config["sendgrid"]?.object else {
-            throw SendGridError.noSendGridConfig
-        }
-        guard let apiKey = sg["apiKey"]?.string else {
-            throw SendGridError.missingConfig("apiKey")
-        }
-        defaultApiKey = apiKey
-    }
-
-    public static func boot(_ drop: Vapor.Droplet) {
-        defaultClient = drop.client
-    }
-
-    public convenience init() throws {
-        guard let client = SendGridClient.defaultClient else {
-            throw SendGridError.noClient
-        }
-        guard let apiKey = SendGridClient.defaultApiKey else {
-            throw SendGridError.missingConfig("apiKey")
-        }
-        try self.init(clientProtocol: client, apiKey: apiKey)
-    }
-
     public init(clientProtocol: ClientProtocol.Type, apiKey: String) throws {
         self.apiKey = apiKey
         client = try clientProtocol.make(scheme: "https", host: "api.sendgrid.com")
-    }
-
-    public func send(_ emails: [SMTP.Email]) throws {
-        // Convert to SendGrid Emails and then send
-        let sgEmails = emails.map { SendGridEmail(from: $0 ) }
-        try send(sgEmails)
     }
 
     public func send(_ emails: [SendGridEmail]) throws {
@@ -62,8 +32,7 @@ public final class SendGridClient: MailClientProtocol {
                   return
               case 400:
                   throw SendGridError.badRequest(
-                      try response.json?.extract("errors")
-                      ?? []
+                      try response.json?.extract("errors") ?? []
                   )
               case 401:
                   throw SendGridError.unauthorized
@@ -78,5 +47,39 @@ public final class SendGridClient: MailClientProtocol {
             }
         }
     }
+
+}
+
+extension SendGridClient: MailClientProtocol {
+
+  public static func configure(_ config: Settings.Config) throws {
+      guard let sg = config["sendgrid"]?.object else {
+          throw SendGridError.noSendGridConfig
+      }
+      guard let apiKey = sg["apiKey"]?.string else {
+          throw SendGridError.missingConfig("apiKey")
+      }
+      defaultApiKey = apiKey
+  }
+
+  public static func boot(_ drop: Vapor.Droplet) {
+      defaultClient = drop.client
+  }
+
+  public convenience init() throws {
+      guard let client = SendGridClient.defaultClient else {
+          throw SendGridError.noClient
+      }
+      guard let apiKey = SendGridClient.defaultApiKey else {
+          throw SendGridError.missingConfig("apiKey")
+      }
+      try self.init(clientProtocol: client, apiKey: apiKey)
+  }
+
+  public func send(_ emails: [SMTP.Email]) throws {
+      // Convert to SendGrid Emails and then send
+      let sgEmails = emails.map { SendGridEmail(from: $0 ) }
+      try send(sgEmails)
+  }
 
 }
