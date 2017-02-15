@@ -7,10 +7,13 @@ import Foundation
 /**
     SendGrid client
 */
-public final class MailClient {
+public final class SendGridClient: MailClientProtocol {
 
-    static let apiKey: String
-    static let client: ClientProtocol
+    static var defaultApiKey: String?
+    static var defaultClient: ClientProtocol.Type?
+
+    var apiKey: String
+    var client: ClientProtocol
 
     public enum Error: Swift.Error {
         case noSendGridConfig
@@ -25,15 +28,33 @@ public final class MailClient {
         guard let apiKey = sg["apiKey"]?.string else {
             throw Error.missingConfig("apiKey")
         }
-        self.apiKey = apiKey
+        defaultApiKey = apiKey
+    }
+
+    public static func boot(_ drop: Vapor.Droplet) {
+        defaultClient = drop.client
+    }
+
+    public convenience init() throws {
+        guard let client = SendGridClient.defaultClient else {
+            throw Error.noClient
+        }
+        guard let apiKey = SendGridClient.defaultApiKey else {
+            throw Error.missingConfig("apiKey")
+        }
+        try self.init(clientProtocol: client, apiKey: apiKey)
     }
 
     public init(clientProtocol: ClientProtocol.Type, apiKey: String) throws {
-        MailClient.apiKey = apiKey
+        self.apiKey = apiKey
         client = try clientProtocol.make(scheme: "https", host: "api.sendgrid.com")
     }
 
-
+    public func send(_ emails: [SMTP.Email]) throws {
+        // Convert to SendGrid Emails and then send
+        let sgEmails = emails.map { SendGridEmail(from: $0 ) }
+        try send(sgEmails)
+    }
 
     public func send(_ emails: [SendGridEmail]) throws {
         let headers: [HeaderKey: String] = [
@@ -54,26 +75,5 @@ public final class MailClient {
             }
         }
     }
-
-}
-
-
-extension MailClient: MailClientProtocol {
-
-  public convenience init() throws {
-      guard let clientProtocol = Provider.clientProtocol else {
-          throw Provider.Error.noClient
-      }
-      guard let apiKey = Provider.apiKey else {
-          throw Provider.Error.missingConfig("apiKey")
-      }
-      try self.init(clientProtocol: clientProtocol, apiKey: apiKey)
-  }
-
-  public func send(_ emails: [SMTP.Email]) throws {
-      // Convert to SendGrid Emails and then send
-      let sgEmails = emails.map { SendGridEmail(from: $0 ) }
-      try send(sgEmails)
-  }
 
 }
