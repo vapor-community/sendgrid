@@ -1,5 +1,5 @@
 import Foundation
-import Mail
+import SMTP
 
 public final class SendGridEmail {
 
@@ -124,10 +124,10 @@ public final class SendGridEmail {
     public convenience init(from: EmailAddressRepresentable, subject: String, body: EmailBodyRepresentable) {
         self.init(from: from, subject: subject, templateId: nil, body: body)
     }
-    
+
     public func toDictionary() -> [String: Any] {
         var data = [String: Any]()
-        
+
         /*
             Personalizations
          */
@@ -138,7 +138,7 @@ public final class SendGridEmail {
             if(personalization.headers.count > 0) { personalizationsDictionary["headers"] = personalization.headers }
             if(personalization.substitutions.count > 0) { personalizationsDictionary["substitutions"] = personalization.substitutions }
             if(personalization.sendAt != nil) { personalizationsDictionary["send_at"] = sendAt!.timeIntervalSince1970 }
-            
+
             if(personalization.to.count > 0){
                 var toArray = [[String:Any]]()
                 for to in personalization.to {
@@ -149,7 +149,7 @@ public final class SendGridEmail {
                 }
                 personalizationsDictionary["to"] = toArray
             }
-            
+
             if(personalization.cc.count > 0){
                 var ccArray = [[String:Any]]()
                 for cc in personalization.cc {
@@ -160,7 +160,7 @@ public final class SendGridEmail {
                 }
                 personalizationsDictionary["cc"] = ccArray
             }
-            
+
             if(personalization.bcc.count > 0){
                 var bccArray = [[String:Any]]()
                 for bcc in personalization.bcc {
@@ -174,15 +174,15 @@ public final class SendGridEmail {
             personalizationArray.append(personalizationsDictionary)
         }
         data["personalizations"] = personalizationArray
-        
-        /* 
+
+        /*
             From
          */
         var fromDictionary = [String: Any]()
         fromDictionary["email"] = from.address
         if(from.name != nil) { fromDictionary["name"] = from.name! }
         data["from"] = fromDictionary
-        
+
         /*
             Reply To
          */
@@ -192,12 +192,12 @@ public final class SendGridEmail {
             if(replyTo!.name != nil) { replyToDictionary["name"] = from.name! }
             data["reply_to"] = replyToDictionary
         }
-        
+
         /*
             Subject
          */
         if(subject != "") { data["subject"] = subject }
-        
+
         /*
             Content
          */
@@ -213,7 +213,7 @@ public final class SendGridEmail {
             }
             data["content"] = contentArray
         }
-        
+
         /*
             Attachments
          */
@@ -228,37 +228,37 @@ public final class SendGridEmail {
             }
             data["attachments"] = attachmentsArray
         }
-        
+
         /*
             Template Id
          */
         if(templateId != nil) { data["template_id"] = templateId! }
-        
+
         /*
             Sections
          */
         if(sections.count > 0) { data["sections"] = sections }
-        
+
         /*
             Headers
          */
         if(headers.count > 0) { data["headers"] = headers }
-        
+
         /*
             Categories
          */
         if(categories.count > 0) { data["categories"] = categories }
-        
+
         /*
             Send At
          */
         if(sendAt != nil) { data["send_at"] = sendAt!.timeIntervalSince1970 }
-        
+
         /*
             Batch Id
          */
         if(batchId != nil) { data["batch_id"] = batchId! }
-        
+
         /*
             Unsubscribers
          */
@@ -268,31 +268,31 @@ public final class SendGridEmail {
         default:
             break
         }
-        
+
         /*
             Ip Pool Name
          */
         if(ipPoolName != nil) { data["ip_pool_name"] = ipPoolName! }
-        
+
         /*
             Mail Settings
          */
         var mailSettings = [String: Any]()
-        
+
         /*
                 BCC
          */
         if(bccFirst != nil){
             mailSettings["bcc"] = ["email": bccFirst!.address, "enable": true]
         }
-        
+
         /*
                 Bypass List Management
          */
         if(bypassListManagement) {
             mailSettings["bypass_list_management"] = ["enable": true]
         }
-        
+
         /*
                 Footer
          */
@@ -309,7 +309,7 @@ public final class SendGridEmail {
             }
             mailSettings["footer"] = footerDictionary
         }
-        
+
         /*
                 Sandbox Mode
          */
@@ -325,12 +325,12 @@ public final class SendGridEmail {
             break
         }
         if (mailSettings.count > 0) { data["mail_settings"] = mailSettings }
-        
+
         /*
             Tracking Settings
          */
         var trackingSettings = [String: Any]()
-        
+
         /*
                 Click Tracking
          */
@@ -339,7 +339,7 @@ public final class SendGridEmail {
         } else if(clickTracking == ClickTracking.htmlOnly) {
             trackingSettings["click_tracking"] = ["enable": true, "enable_text": false]
         }
-        
+
         /*
                 Open Tracking
          */
@@ -349,7 +349,7 @@ public final class SendGridEmail {
         default:
             break
         }
-        
+
         /*
                 Subscription Tracking
          */
@@ -362,7 +362,7 @@ public final class SendGridEmail {
         default:
             break
         }
-        
+
         /*
                 Google Analytics
          */
@@ -376,7 +376,7 @@ public final class SendGridEmail {
             trackingSettings["ganalytics"] = gaData
         }
         if(trackingSettings.count > 0) { data["tracking_settings"] = trackingSettings }
-        
+
         return data
     }
 }

@@ -1,4 +1,5 @@
 import Mail
+import SMTP
 import Foundation
 
 public struct Personalization {
