@@ -15,18 +15,12 @@ public final class SendGridClient: MailClientProtocol {
     var apiKey: String
     var client: ClientProtocol
 
-    public enum Error: Swift.Error {
-        case noSendGridConfig
-        case missingConfig(String)
-        case noClient
-    }
-
     public static func configure(_ config: Settings.Config) throws {
         guard let sg = config["sendgrid"]?.object else {
-            throw Error.noSendGridConfig
+            throw SendGridError.noSendGridConfig
         }
         guard let apiKey = sg["apiKey"]?.string else {
-            throw Error.missingConfig("apiKey")
+            throw SendGridError.missingConfig("apiKey")
         }
         defaultApiKey = apiKey
     }
@@ -37,10 +31,10 @@ public final class SendGridClient: MailClientProtocol {
 
     public convenience init() throws {
         guard let client = SendGridClient.defaultClient else {
-            throw Error.noClient
+            throw SendGridError.noClient
         }
         guard let apiKey = SendGridClient.defaultApiKey else {
-            throw Error.missingConfig("apiKey")
+            throw SendGridError.missingConfig("apiKey")
         }
         try self.init(clientProtocol: client, apiKey: apiKey)
     }
@@ -57,21 +51,30 @@ public final class SendGridClient: MailClientProtocol {
     }
 
     public func send(_ emails: [SendGridEmail]) throws {
-        let headers: [HeaderKey: String] = [
-            "Authorization": "Bearer \(apiKey)",
-            "Content-Type": "application/json"
-        ]
-
         try emails.forEach { email in
             let jsonBytes = try JSON(node: email.makeNode()).makeBytes()
-            do {
-                let test = try client.post(path: "/v3/mail/send", headers: headers, body: Body(jsonBytes))
-                if(test.status.statusCode != 200 && test.status.statusCode != 202){
-                    let sendgridErrors: [SendgridError] = try test.json!.extract("errors")
-                    throw Abort.custom(status: test.status, message: sendgridErrors[0].message)
-                }
-            } catch let error {
-                throw error
+            let response = try client.post(path: "/v3/mail/send", headers: [
+                "Authorization": "Bearer \(apiKey)",
+                "Content-Type": "application/json"
+            ], body: Body(jsonBytes))
+            switch response.status.statusCode {
+              case 200, 202:
+                  return
+              case 400:
+                  throw SendGridError.badRequest(
+                      try response.json?.extract("errors")
+                      ?? []
+                  )
+              case 401:
+                  throw SendGridError.unauthorized
+              case 413:
+                  throw SendGridError.payloadTooLarge
+              case 429:
+                  throw SendGridError.tooManyRequests
+              case 500, 503:
+                  throw SendGridError.serverError
+              default:
+                  throw SendGridError.unexpectedServerResponse
             }
         }
     }
