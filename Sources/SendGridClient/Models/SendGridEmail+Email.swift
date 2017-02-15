@@ -1,4 +1,3 @@
-import Mail
 import SMTP
 
 extension SendGridEmail {

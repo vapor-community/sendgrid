@@ -63,9 +63,9 @@ public final class SendGridClient: MailClientProtocol {
         ]
 
         try emails.forEach { email in
-            let jsonData = try JSONSerialization.data(withJSONObject: email.toDictionary(), options: .prettyPrinted)
+            let jsonBytes = try JSON(node: email.makeNode()).makeBytes()
             do {
-                let test = try client.post(path: "/v3/mail/send", headers: headers, body: Body(jsonData))
+                let test = try client.post(path: "/v3/mail/send", headers: headers, body: Body(jsonBytes))
                 if(test.status.statusCode != 200 && test.status.statusCode != 202){
                     let sendgridErrors: [SendgridError] = try test.json!.extract("errors")
                     throw Abort.custom(status: test.status, message: sendgridErrors[0].message)
