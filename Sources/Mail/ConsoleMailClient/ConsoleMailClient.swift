@@ -1,18 +1,21 @@
 import Console
-import Mail
+import SMTP
+import Vapor
 
 /**
     A development-only MailClient which does not send emails; rather, it
     logs them to the console for debugging purposes.
 */
-public final class MailClient: MailClientProtocol {
+public final class ConsoleMailClient: MailClientProtocol {
 
     let console = Terminal(arguments: [])
     let style = ConsoleStyle.custom(.yellow)
 
+    public static func configure(_ config: Config) throws {}
+
     public init() {}
 
-    public func send(_ emails: [Email]) throws {
+    public func send(_ emails: [SMTP.Email]) throws {
         emails.forEach { email in
             console.output("SEND EMAIL", style: style, newLine: true)
             console.output("From: \(email.from)", style: style, newLine: true)
