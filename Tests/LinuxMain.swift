@@ -3,7 +3,7 @@
 import XCTest
 
 @testable import MailTests
-@testable import SendGridClientTests
+@testable import SendGridTests
 
 XCTMain([
     // MailClientProtocol Tests

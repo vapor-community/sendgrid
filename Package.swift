@@ -7,7 +7,7 @@ let package = Package(
             name: "Mail"
         ),
         Target(
-            name: "SendGridClient",
+            name: "SendGrid",
             dependencies: [
                 "Mail"
             ]

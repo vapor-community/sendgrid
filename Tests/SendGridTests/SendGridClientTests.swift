@@ -1,7 +1,7 @@
 import XCTest
 import Mail
 import SMTP
-import SendGridClient
+import SendGrid
 @testable import Vapor
 
 // Test inbox: https://www.mailinator.com/inbox2.jsp?public_to=bygri-mail
