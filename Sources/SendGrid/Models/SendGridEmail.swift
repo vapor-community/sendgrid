@@ -103,7 +103,7 @@ public final class SendGridEmail {
     public var content: [EmailBody] = []
 
 
-    private init(from: EmailAddressRepresentable, subject: String, templateId: String?, body: EmailBodyRepresentable?) {
+    private init(from: EmailAddressRepresentable, subject: String?, templateId: String?, body: EmailBodyRepresentable?) {
         personalizations = []
         self.from = from.emailAddress
         self.subject = subject
@@ -116,7 +116,7 @@ public final class SendGridEmail {
     /*
         Init from a template
     */
-    public convenience init(from: EmailAddressRepresentable, subject: String, templateId: String, body: EmailBodyRepresentable?) {
+    public convenience init(from: EmailAddressRepresentable, templateId: String, subject: String?=nil, body: EmailBodyRepresentable?=nil) {
         self.init(from: from, subject: subject, templateId: templateId, body: body)
     }
 
