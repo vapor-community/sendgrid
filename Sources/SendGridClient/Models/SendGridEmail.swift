@@ -22,9 +22,11 @@ public final class SendGridEmail {
     */
     public var replyTo: EmailAddress? = nil
     /*
-        Email subject, which can be overwritten by each personalization
+        Email subject, which can be overwritten by each personalization,
+        and is required unless every personalization has a subject set or
+        the email uses a template with a subject already set
     */
-    public let subject: String
+    public let subject: String?
     /*
         Set of attachments to this email
     */

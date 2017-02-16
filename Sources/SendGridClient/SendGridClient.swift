@@ -28,22 +28,22 @@ public final class SendGridClient {
                 "Content-Type": "application/json"
             ], body: Body(jsonBytes))
             switch response.status.statusCode {
-              case 200, 202:
-                  return
-              case 400:
-                  throw SendGridError.badRequest(
-                      try response.json?.extract("errors") ?? []
-                  )
-              case 401:
-                  throw SendGridError.unauthorized
-              case 413:
-                  throw SendGridError.payloadTooLarge
-              case 429:
-                  throw SendGridError.tooManyRequests
-              case 500, 503:
-                  throw SendGridError.serverError
-              default:
-                  throw SendGridError.unexpectedServerResponse
+            case 200, 202:
+                return
+            case 400:
+                throw SendGridError.badRequest(
+                    try response.json?.extract("errors") ?? []
+                )
+            case 401:
+                throw SendGridError.unauthorized
+            case 413:
+                throw SendGridError.payloadTooLarge
+            case 429:
+                throw SendGridError.tooManyRequests
+            case 500, 503:
+                throw SendGridError.serverError
+            default:
+                throw SendGridError.unexpectedServerResponse
             }
         }
     }
