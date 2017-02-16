@@ -10,6 +10,7 @@ public final class Provider<T: MailClientProtocol>: Vapor.Provider {
     public init() throws {}
 
     public func boot(_ drop: Droplet) {
+        T.boot(drop)
         if let existing = drop.mailer {
             print("\(String(describing: T.self)) will overwrite existing mailer: \(String(describing: existing))")
         }

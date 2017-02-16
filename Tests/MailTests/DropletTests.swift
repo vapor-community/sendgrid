@@ -24,6 +24,8 @@ private final class DummyMailClient: MailClientProtocol {
         configurationString = string
     }
 
+    public static func boot(_ drop: Droplet) {}
+
     init() throws {}
 
     func send(_ emails: [SMTP.Email]) throws {

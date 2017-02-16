@@ -6,6 +6,7 @@ Vapor Provider for sending email through swappable backends.
 
 Backends included in this repository:
 
+* `SendGrid`, a fully-featured implementation of the SendGrid V3 Mail Send API.
 * `InMemoryMailClient`, a development-only backend which stores emails in memory.
 * `ConsoleMailClient`, a development-only backend which outputs emails to the console.
 
@@ -49,6 +50,52 @@ if let complicatedMailer = try drop.mailer.make() as? ComplicatedMailClient {
     complicatedMailer.send(complicatedEmail)
 }
 ```
+
+### SendGrid backend
+
+First, set up the Provider.
+
+```Swift
+import Mail
+import SendGrid
+
+let drop = Droplet()
+try drop.addProvider(Mail.Provider<SendGridClient>.self)
+```
+
+SendGrid expects a configuration file named `sendgrid.json` with the following
+format, and will throw `.noSendGridConfig` or `.missingConfig(fieldname)` if
+configuration was not found.
+
+```json
+{
+    "apiKey": "SG.YOUR_KEY"
+}
+```
+
+Once installed, you can send simple emails using the following format:
+
+```Swift
+let email = Email(from: …, to: …, subject: …, body: …)
+try drop.mailer?.send(email)
+```
+
+However, `SendGrid` supports the full range of options available in SendGrid's
+[V3 Mail Send API](https://sendgrid.com/docs/API_Reference/Web_API_v3/Mail/index.html).
+
+```Swift
+let email = SendGridEmail(from: "from@test.com", templateId: "welcome_email")
+email.personalizations.append(Personalization([
+    to: "to@test.com"
+]))
+email.sandboxMode = true
+email.openTracking = .enabled(nil)
+if let sendgrid = try drop.mailer.make() as? SendGridClient {
+    sendgrid.send(email)
+}
+```
+
+See `SendGridEmail.swift` for all configuration options.
 
 ### Development backends
 

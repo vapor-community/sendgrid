@@ -14,6 +14,8 @@ public final class InMemoryMailClient: MailClientProtocol {
 
     public static func configure(_ config: Config) throws {}
 
+    public static func boot(_ drop: Droplet) {}
+
     public init() {}
 
     public func send(_ emails: [SMTP.Email]) throws {
