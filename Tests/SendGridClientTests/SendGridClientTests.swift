@@ -4,51 +4,23 @@ import SMTP
 import SendGridClient
 @testable import Vapor
 
+// Test inbox: https://www.mailinator.com/inbox2.jsp?public_to=bygri-mail
+
 class SendGridClientTests: XCTestCase {
     static let allTests = [
-        // ("testSendEmail", testSendEmail),
-        // ("testSendMultipleEmails", testSendMultipleEmails),
         ("testProvider", testProvider),
     ]
 
-/*
-    func testSendEmail() throws {
-        let mailer = SendGridClient()
-        let email = SMTP.Email(from: "from@email.com",
-                          to: "to1@email.com", "to2@email.com",
-                          subject: "Email Subject",
-                          body: "Hello Email")
-        let attachment = EmailAttachment(filename: "dummy.data",
-                                         contentType: "dummy/data",
-                                         body: [1,2,3,4,5])
-        email.attachments.append(attachment)
-        try mailer.send(email)
-
-        XCTAssert(mailer.sentEmails.count == 1)
-        XCTAssert(mailer.sentEmails[0].subject == "Email Subject")
-    }
-*/
-/*
-    func testSendMultipleEmails() throws {
-        let mailer = SendGridClient()
-        let emails = [
-            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email1", body: "Email1 body"),
-            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email2", body: "Email2 body"),
-            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email3", body: "Email3 body"),
-        ]
-        try mailer.send(emails)
-
-        XCTAssert(mailer.sentEmails.count == 3)
-        XCTAssert(mailer.sentEmails[0].subject == "Email1")
-        XCTAssert(mailer.sentEmails[1].subject == "Email2")
-        XCTAssert(mailer.sentEmails[2].subject == "Email3")
-    }
-*/
+    let apiKey = "SG.YOUR_KEY" // Set here, but don't commit to git!
 
     func testProvider() throws {
+        if apiKey == "SG.YOUR_KEY" {
+            print("Not testing SendGrid as no API Key is set")
+            return
+        }
         let config = Config([
             "sendgrid": [
-                "apiKey": "configured"
+                "apiKey": Node(apiKey)
             ],
         ])
         let drop = try makeDroplet(config: config)
@@ -58,6 +30,10 @@ class SendGridClientTests: XCTestCase {
                           to: "bygri-mail@mailinator.com",
                           subject: "Email Subject",
                           body: "Hello Email")
+        let attachment = EmailAttachment(filename: "dummy.data",
+                                         contentType: "dummy/data",
+                                         body: [1,2,3,4,5])
+        email.attachments.append(attachment)
         try drop.mailer?.send(email)
     }
 

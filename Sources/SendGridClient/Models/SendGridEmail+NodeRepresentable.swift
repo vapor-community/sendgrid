@@ -31,14 +31,15 @@ extension SendGridEmail: NodeRepresentable {
         }
         // Attachments
         if !attachments.isEmpty {
-            obj["attachments"] = try Node(attachments.map {
+            obj["attachments"] = Node(attachments.map {
                 Node([
                     "filename": $0.emailAttachment.filename.makeNode(),
-                    "content": try $0.emailAttachment.body.makeNode(),
+                    "content": Node($0.emailAttachment.body.base64String),
                     "type": $0.emailAttachment.contentType.makeNode(),
                 ])
             })
         }
+        print(String(describing: obj["attachments"]))
         // Template Id
         if let templateId = templateId {
             obj["template_id"] = Node(templateId)
