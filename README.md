@@ -104,7 +104,7 @@ not loaded from config, and must be set in code.
 import Mail
 import SMTPClient
 
-let drop = try makeDroplet(config: config)
+let drop = Droplet()
 SMTPClient<TCPClientStream>.setSecurityLayer(.tls(nil))
 try drop.addProvider(Mail.Provider<SMTPClient<TCPClientStream>>.self)
 ```
