@@ -1,17 +1,16 @@
 # Mail
 
 ![Swift](http://img.shields.io/badge/swift-3.0-brightgreen.svg)
+![Vapor](http://img.shields.io/badge/vapor-1.5-brightgreen.svg)
 
 Vapor Provider for sending email through swappable backends.
 
 Backends included in this repository:
 
 * `SendGrid`, a fully-featured implementation of the SendGrid V3 Mail Send API.
+* `SMTPClient`, which conforms Vapor's built-in SMTP Client to this backend.
 * `InMemoryMailClient`, a development-only backend which stores emails in memory.
 * `ConsoleMailClient`, a development-only backend which outputs emails to the console.
-
-SMTP is not included. Use Vapor's built in SMTPClient if you need to use the
-SMTP protocol.
 
 ## 📘 Overview
 
@@ -96,6 +95,44 @@ if let sendgrid = try drop.mailer.make() as? SendGridClient {
 ```
 
 See `SendGridEmail.swift` for all configuration options.
+
+### SMTPClient
+
+First, set up the Provider. Note that the security layer and stream types are
+not loaded from config, and must be set in code.
+
+```Swift
+import Mail
+import SMTPClient
+
+let drop = Droplet()
+SMTPClient<TCPClientStream>.setSecurityLayer(.tls(nil))
+try drop.addProvider(Mail.Provider<SMTPClient<TCPClientStream>>.self)
+```
+
+SMTPClient expects a configuration file named `smtp.json` with the following
+format, and will throw `.noSMTPConfig` or `.missingConfig(fieldname)` if
+configuration was not found.
+
+```json
+{
+    "host": "smtp.host.com",
+    "port": 465,
+    "username": "username",
+    "password": "password"
+}
+```
+
+Once installed, you can send emails using the following format:
+
+```Swift
+let email = Email(from: …, to: …, subject: …, body: …)
+try drop.mailer?.send(email)
+```
+
+All connections will use the host, port, username, password, stream type and
+security layer that you set with the Provider. If you need to customise any of
+these per-send, you should use Vapor's `SMTPClient` directly.
 
 ### Development backends
 

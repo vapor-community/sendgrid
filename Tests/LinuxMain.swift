@@ -4,6 +4,7 @@ import XCTest
 
 @testable import MailTests
 @testable import SendGridTests
+@testable import SMTPClientTests
 
 XCTMain([
     // MailClientProtocol Tests
@@ -17,6 +18,9 @@ XCTMain([
 
     // SendGridClient Tests
     testCase(SendGridClientTests.allTests),
+
+    // SMTPClient Tests
+    testCase(SMTPClientTests.allTests),
 ])
 
 #endif
