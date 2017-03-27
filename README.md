@@ -134,6 +134,38 @@ All connections will use the host, port, username, password, stream type and
 security layer that you set with the Provider. If you need to customise any of
 these per-send, you should use Vapor's `SMTPClient` directly.
 
+### Mailgun backend
+
+First, set up the Provider.
+
+```Swift
+import Mail
+import Mailgun
+
+let drop = Droplet()
+try drop.addProvider(Mail.Provider<MailgunClient>.self)
+```
+
+SendGrid expects a configuration file named `mailgun.json` with the following
+format, and will throw `.noSendGridConfig` or `.missingConfig(fieldname)` if
+configuration was not found.
+
+```json
+{
+    "domain": "MG.YOUR_DOMAIN",
+    "apiKey": "MG.YOUR_KEY"
+}
+```
+
+Once installed, you can send simple emails using the following format:
+
+```Swift
+let email = Email(from: …, to: …, subject: …, body: …)
+try drop.mailer?.send(email)
+```
+
+Mailgun supports both HTML and Plain Text emails.
+
 ### Development backends
 
 There are two options for testing your emails in development.
