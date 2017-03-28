@@ -4,7 +4,7 @@ import SMTP
 import SendGrid
 @testable import Vapor
 
-// Test inbox: https://www.mailinator.com/inbox2.jsp?public_to=bygri-mail
+// Test inbox: https://www.mailinator.com/inbox2.jsp?public_to=vapor-sendgrid
 
 class SendGridClientTests: XCTestCase {
     static let allTests = [
@@ -26,8 +26,8 @@ class SendGridClientTests: XCTestCase {
         let drop = try makeDroplet(config: config)
         try drop.addProvider(Mail.Provider<SendGridClient>.self)
 
-        let email = SMTP.Email(from: "bygri-mail-from@mailinator.com",
-                          to: "bygri-mail@mailinator.com",
+        let email = SMTP.Email(from: "vapor-sendgrid-from@mailinator.com",
+                          to: "vapor-sendgrid@mailinator.com",
                           subject: "Email Subject",
                           body: "Hello Email")
         let attachment = EmailAttachment(filename: "dummy.data",
