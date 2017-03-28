@@ -18,6 +18,12 @@ let package = Package(
                 "Mail"
             ]
         ),
+        Target(
+            name: "Mailgun",
+            dependencies: [
+                "Mail"
+            ]
+        ),
     ],
     dependencies: [
         .Package(url: "https://github.com/vapor/vapor.git", majorVersion: 1, minor: 5),

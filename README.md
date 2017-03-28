@@ -7,6 +7,7 @@ Vapor Provider for sending email through swappable backends.
 
 Backends included in this repository:
 
+* `Mailgun`, a basic implementation for sending emails through Mailgun's V3 API.
 * `SendGrid`, a fully-featured implementation of the SendGrid V3 Mail Send API.
 * `SMTPClient`, which conforms Vapor's built-in SMTP Client to this backend.
 * `InMemoryMailClient`, a development-only backend which stores emails in memory.
@@ -49,6 +50,38 @@ if let complicatedMailer = try drop.mailer.make() as? ComplicatedMailClient {
     complicatedMailer.send(complicatedEmail)
 }
 ```
+
+### Mailgun backend
+
+First, set up the Provider.
+
+```Swift
+import Mail
+import Mailgun
+
+let drop = Droplet()
+try drop.addProvider(Mail.Provider<MailgunClient>.self)
+```
+
+SendGrid expects a configuration file named `mailgun.json` with the following
+format, and will throw `.noMailgunConfig` or `.missingConfig(fieldname)` if
+configuration was not found.
+
+```json
+{
+    "domain": "MG.YOUR_DOMAIN",
+    "apiKey": "MG.YOUR_KEY"
+}
+```
+
+Once installed, you can send simple emails using the following format:
+
+```Swift
+let email = Email(from: …, to: …, subject: …, body: …)
+try drop.mailer?.send(email)
+```
+
+Mailgun supports both HTML and Plain Text emails.
 
 ### SendGrid backend
 
