@@ -55,8 +55,7 @@ public final class MailgunClient {
     
     fileprivate func authorizationHeaderValue(_ apiKey: String) -> String {
         let userPasswordString = "api:\(apiKey)"
-        let userPasswordData = userPasswordString.data(using: String.Encoding.utf8)
-        let base64EncodedCredential = userPasswordData!.base64EncodedString()
+        guard let userPasswordData = userPasswordString.data(using: String.Encoding.utf8) else { return "" }
         let authString = "Basic \(base64EncodedCredential)"
         return authString
     }
