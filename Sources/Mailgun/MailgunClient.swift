@@ -60,10 +60,11 @@ public final class MailgunClient {
         return authString
     }
     
-    fileprivate func createMultipartData(_ node: Node, boundary: String) -> Bytes {
+    fileprivate func createMultipartData(_ node: Node, boundary: String) throws -> Bytes {
         var serialized = ""
         
-        node.object?.forEach { key, value in
+        guard let object = node.object else { throw MailgunError.missingEmailContent }
+        object.forEach { key, value in
             guard let value = value.string else { return }
             serialized += "--\(boundary)\r\n"
             serialized += "Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n"

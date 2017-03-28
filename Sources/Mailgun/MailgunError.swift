@@ -58,5 +58,10 @@ public enum MailgunError: Swift.Error {
      */
     case serverError
     
+    /*
+     Missing email content
+     */
+    case missingEmailContent
+    
     case unexpectedServerResponse
 }
