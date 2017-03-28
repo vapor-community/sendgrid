@@ -53,7 +53,7 @@ public enum MailgunError: Swift.Error {
     case unauthorized
     
     /*
-     An error occurred on a SendGrid server, or the SendGrid v3 Web API is
+     An error occurred on a Mailgun server, or the Mailgun v3 API is
      not available.
      */
     case serverError
