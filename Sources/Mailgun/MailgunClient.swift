@@ -89,8 +89,8 @@ extension MailgunClient: MailClientProtocol {
         guard let apiKey = mg["apiKey"]?.string else {
             throw MailgunError.missingConfig("apiKey")
         }
-        self.defaultDomain = domain
-        self.defaultApiKey = apiKey
+        defaultDomain = domain
+        defaultApiKey = apiKey
     }
     
     public static func boot(_ drop: Vapor.Droplet) {
