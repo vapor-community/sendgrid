@@ -9,6 +9,7 @@ Backends included in this repository:
 
 * `SendGrid`, a fully-featured implementation of the SendGrid V3 Mail Send API.
 * `SMTPClient`, which conforms Vapor's built-in SMTP Client to this backend.
+* `Mailgun`, a basic implementation for sending emails through Mailgun's V3 API.
 * `InMemoryMailClient`, a development-only backend which stores emails in memory.
 * `ConsoleMailClient`, a development-only backend which outputs emails to the console.
 
@@ -147,7 +148,7 @@ try drop.addProvider(Mail.Provider<MailgunClient>.self)
 ```
 
 SendGrid expects a configuration file named `mailgun.json` with the following
-format, and will throw `.noSendGridConfig` or `.missingConfig(fieldname)` if
+format, and will throw `.noMailgunConfig` or `.missingConfig(fieldname)` if
 configuration was not found.
 
 ```json
