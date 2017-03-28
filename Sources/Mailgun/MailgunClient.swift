@@ -10,9 +10,9 @@ import Console
 import Vapor
 import HTTP
 import Foundation
-import TurnstileCrypto
 import SMTP
 import Mail
+
 
 /**
  Mailgun client
@@ -35,14 +35,13 @@ public final class MailgunClient {
     
     public func send(_ emails: [MailgunEmail]) throws {
         try emails.forEach { email in
-            let boundary = "vapor.mailgun.package.\(URandom().secureToken)"
+            let boundary = "vapor.mailgun.package.\(SecureToken().token)"
             let bytes = try self.createMultipartData(email.makeNode(), boundary: boundary)
             let headers: [HeaderKey : String] = [
                 "Authorization": self.authorizationHeaderValue(self.apiKey),
                 "Content-Type": "multipart/form-data; boundary=\(boundary)"
             ]
             let response = try self.client.post(path: "/v3/\(self.domain)/messages", headers: headers, body: Body.data(bytes))
-            print(response)
             switch response.status.statusCode {
             case 200, 202: return
             case 400: throw MailgunError.badRequest(try response.json?.extract())
@@ -56,6 +55,7 @@ public final class MailgunClient {
     fileprivate func authorizationHeaderValue(_ apiKey: String) -> String {
         let userPasswordString = "api:\(apiKey)"
         guard let userPasswordData = userPasswordString.data(using: String.Encoding.utf8) else { return "" }
+        let base64EncodedCredential = userPasswordData.base64EncodedString()
         let authString = "Basic \(base64EncodedCredential)"
         return authString
     }
