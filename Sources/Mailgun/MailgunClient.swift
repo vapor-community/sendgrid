@@ -36,12 +36,12 @@ public final class MailgunClient {
     public func send(_ emails: [MailgunEmail]) throws {
         try emails.forEach { email in
             let boundary = "vapor.mailgun.package.\(SecureToken().token)"
-            let bytes = try self.createMultipartData(email.makeNode(), boundary: boundary)
+            let bytes = try createMultipartData(email.makeNode(), boundary: boundary)
             let headers: [HeaderKey : String] = [
-                "Authorization": self.authorizationHeaderValue(self.apiKey),
+                "Authorization": authorizationHeaderValue(apiKey),
                 "Content-Type": "multipart/form-data; boundary=\(boundary)"
             ]
-            let response = try self.client.post(path: "/v3/\(self.domain)/messages", headers: headers, body: Body.data(bytes))
+            let response = try client.post(path: "/v3/\(domain)/messages", headers: headers, body: Body.data(bytes))
             switch response.status.statusCode {
             case 200, 202: return
             case 400: throw MailgunError.badRequest(try response.json?.extract())
