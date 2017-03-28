@@ -31,8 +31,8 @@ class MailgunClientTests: XCTestCase {
         let drop = try makeDroplet(config: config)
         try drop.addProvider(Mail.Provider<MailgunClient>.self)
 
-        let email = SMTP.Email(from: "vapor-mail-from@mailinator.com",
-                          to: "vapor-mail@mailinator.com",
+        let email = SMTP.Email(from: "vapor-mailgun-from@mailinator.com",
+                          to: "vapor-mailgun@mailinator.com",
                           subject: "Email Subject",
                           body: "Hello Email")
         try drop.mailer?.send(email)
