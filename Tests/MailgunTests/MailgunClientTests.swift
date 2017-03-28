@@ -10,7 +10,7 @@ class MailgunClientTests: XCTestCase {
         ("testProvider", testProvider),
     ]
 
-    let apiKey = "MG.YOUR_KE" // Set here, but don't commit to git!
+    let apiKey = "MG.YOUR_KEY" // Set here, but don't commit to git!
     let domain = "MG.YOUR_DOMAIN" // Set here, but don't commit to git!
 
     func testProvider() throws {
