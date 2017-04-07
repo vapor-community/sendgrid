@@ -97,10 +97,9 @@ class DropletTests: XCTestCase {
                               to: "to1@email.com", "to2@email.com",
                               subject: "Email Subject",
                               body: EmailBody(drop, type: .html, view: "email", [
-                                  "firstName": "Peter",
-                                  "lastName": "Pan"
+                                  "name": "Peter Pan",
                               ]))
-        XCTAssertEqual(email.body.content, "object([\"firstName\": Node.Node.string(\"Peter\"), \"lastName\": Node.Node.string(\"Pan\")])")
+        XCTAssertEqual(email.body.content, "object([\"name\": Node.Node.string(\"Peter Pan\")])")
         try drop.mailer?.send(email)
     }
 
