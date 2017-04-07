@@ -184,7 +184,7 @@ if let sendgrid = try drop.mailer.make() as? SendGridClient {
 
 See `SendGridEmail.swift` for all configuration options.
 
-### SMTPClient
+### SMTP
 
 First, add the provider. Note that the security layer and stream types are
 not loaded from config, and must be set in code.
