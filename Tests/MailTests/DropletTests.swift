@@ -42,6 +42,7 @@ class DropletTests: XCTestCase {
         ("testSendEmail", testSendEmail),
         ("testSendNativeEmail", testSendNativeEmail),
         ("testProvider", testProvider),
+        ("testViewEmail", testViewEmail),
     ]
 
     func testSendEmail() throws {
@@ -56,7 +57,6 @@ class DropletTests: XCTestCase {
                                          body: [1,2,3,4,5])
         email.attachments.append(attachment)
         try drop.mailer?.send(email)
-        // XCTAssertTrue(dummyClient.didSend)
     }
 
     func testSendNativeEmail() throws {
@@ -87,6 +87,21 @@ class DropletTests: XCTestCase {
         let drop = try makeDroplet(config: config)
         try drop.addProvider(Mail.Provider<DummyMailClient>.self)
         XCTAssertEqual(DummyMailClient.configurationString, "configured")
+    }
+
+    func testViewEmail() throws {
+        let drop = try makeDroplet()
+        drop.view = TestRenderer(viewsDir: "neverland")
+        drop.mailer = DummyMailClient.self
+        let email = try Email(from: "from@email.com",
+                              to: "to1@email.com", "to2@email.com",
+                              subject: "Email Subject",
+                              body: EmailBody(drop, type: .html, view: "email", [
+                                  "firstName": "Peter",
+                                  "lastName": "Pan"
+                              ]))
+        XCTAssertEqual(email.body.content, "object([\"firstName\": Node.Node.string(\"Peter\"), \"lastName\": Node.Node.string(\"Pan\")])")
+        try drop.mailer?.send(email)
     }
 
 }

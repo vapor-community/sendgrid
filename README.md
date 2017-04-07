@@ -1,9 +1,10 @@
 # Mail
 
-![Swift](http://img.shields.io/badge/swift-3.0-brightgreen.svg)
+![Swift](http://img.shields.io/badge/swift-3.1-brightgreen.svg)
 ![Vapor](http://img.shields.io/badge/vapor-1.5-brightgreen.svg)
 
-Vapor Provider for sending email through swappable backends.
+Vapor Provider for sending email through swappable backends. Includes the
+ability to use Vapor Views to generate templated emails.
 
 Backends included in this repository:
 
@@ -31,6 +32,15 @@ let email = Email(from: "from@email.com",
                   body: "Hello Email")
 email.attachments.append(attachment)
 try drop.mailer?.send(email)
+
+// or create an email from a View
+let templatedEmail = try Email(from: "from@email.com",
+                               to: "to1@email.com", "to2@email.com",
+                               subject: "Email Subject",
+                               body: EmailBody(drop, type: .html, view: "email", [
+                                   "firstName": "Peter",
+                                   "lastName": "Pan",
+                               ]))
 ```
 
 You can also directly instantiate your mail client, if you want:
