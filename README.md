@@ -2,45 +2,71 @@
 
 ![Swift](http://img.shields.io/badge/swift-3.1-brightgreen.svg)
 ![Vapor](http://img.shields.io/badge/vapor-1.5-brightgreen.svg)
+![Travis](https://travis-ci.org/bygri/vapor-mail.svg?branch=master)
 
-Vapor Provider for sending email through swappable backends. Includes the
-ability to use Vapor Views to generate templated emails.
+[Render](#rendering-emails) HTML and plaintext emails using Vapor's views, then
+[send](#sending-emails) them with confidence using your choice of native API
+backends.
 
-Backends included in this repository:
+[Developers](#third-party-developers) can depend on `vapor-mail` to enable
+backend-agnostic email sending in their Providers.
 
-* `Mailgun`, a basic implementation for sending emails through Mailgun's V3 API.
-* `SendGrid`, a fully-featured implementation of the SendGrid V3 Mail Send API.
-* `SMTPClient`, which conforms Vapor's built-in SMTP Client to this backend.
-* `InMemoryMailClient`, a development-only backend which stores emails in memory.
-* `ConsoleMailClient`, a development-only backend which outputs emails to the console.
+Mail includes swappable backends for the following services:
+
+* [`Mailgun`](#mailgun), a basic implementation for sending emails through Mailgun's V3 API.
+* [`SendGrid`](#sendgrid), a fully-featured implementation of the SendGrid V3 Mail Send API.
+* [`SMTPClient`](#smtp), which conforms Vapor's built-in SMTP Client to this backend.
+
+There are also two [development-only](#development-backends) backends:
+
+* `InMemoryMailClient` stores emails in memory.
+* `ConsoleMailClient` outputs emails to the console.
 
 ## 📘 Overview
 
-Simply add your choice of mail client provider to your Droplet, for access to
-frictionless mail sending. If you use `drop.mailer` to send emails, you can
-change the provider at any time without affecting your mailing code.
+### Rendering emails
+
+Using Mail, you can use Views to generate emails in plain text or HTML with Leaf
+or another templating language.
 
 ```Swift
 import Mail
 
 let drop = Droplet()
-try drop.addProvider(Mail.Provider<ConsoleMailClient>.self)
 
-let email = Email(from: "from@email.com",
-                  to: "to1@email.com", "to2@email.com",
-                  subject: "Email Subject",
-                  body: "Hello Email")
-email.attachments.append(attachment)
+let body = try EmailBody(drop, type: .html, view: "email", [
+    "firstName": "Peter",
+    "lastName": "Pan",
+])
+let email = Email(
+    from: "from@email.com",
+    to: "recipient@email.com",
+    subject: "Email subject",
+    body: body)
+```
+
+Of course, if you are using an advanced email backend like SendGrid you may want
+to use your mail provider's templating system instead; see the individual
+[backends](#backends) below for more details.
+
+### Sending emails
+
+Simply add your choice of mail client provider to your Droplet for access to
+frictionless mail sending. Configure your client using Config files, and swap
+out your provider at any time.
+
+```Swift
+import Mail
+
+let drop = Droplet()
+try drop.addProvider(Mail.Provider<ConsoleMailclient>.self)
+
+let email = Email(
+    from: "from@email.com",
+    to: "recipient1@email.com", "recipient2@email.com",
+    subject: "Email subject",
+    body: "Hello")
 try drop.mailer?.send(email)
-
-// or create an email from a View
-let templatedEmail = try Email(from: "from@email.com",
-                               to: "to1@email.com", "to2@email.com",
-                               subject: "Email Subject",
-                               body: EmailBody(drop, type: .html, view: "email", [
-                                   "firstName": "Peter",
-                                   "lastName": "Pan",
-                               ]))
 ```
 
 You can also directly instantiate your mail client, if you want:
@@ -49,21 +75,43 @@ You can also directly instantiate your mail client, if you want:
 import Mail
 
 let mailer = ConsoleMailClient()
+try mailer.send(email)
 ```
 
 Individual backends directly implement any applicable extra features such as
-variable authentication per send, or templated emails. To make use of these
-features:
+variable authentication per send, or templated emails. Refer to the
+[backends](#backends) below for information.
+
+### Attachments
+
+Use Vapor's `EmailAttachment` class:
 
 ```Swift
-if let complicatedMailer = try drop.mailer.make() as? ComplicatedMailClient {
-    complicatedMailer.send(complicatedEmail)
-}
+let attachment = EmailAttachment(
+    filename: "dummy.data",
+    contentType: "dummy/data",
+    body: [1,2,3,4,5])
+email.attachments.append(attachment)
 ```
 
-### Mailgun backend
+### Third-party developers
 
-First, set up the Provider.
+Enable email-sending in your own Providers without tying your end-users to any
+specific email backend by adding a dependency on `vapor-mail`
+and simply calling:
+
+```Swift
+drop.mailer?.send(email)
+```
+
+## 📘 Backends
+
+### Mailgun
+
+The Mailgun backend implements basic mail sending using the Mailgun V3 API.
+Mailgun supports HTML and plain text emails.
+
+First, add the Provider:
 
 ```Swift
 import Mail
@@ -73,29 +121,29 @@ let drop = Droplet()
 try drop.addProvider(Mail.Provider<MailgunClient>.self)
 ```
 
-SendGrid expects a configuration file named `mailgun.json` with the following
-format, and will throw `.noMailgunConfig` or `.missingConfig(fieldname)` if
-configuration was not found.
+Add a Config file named `mailgun.json` with the following format:
 
 ```json
 {
     "domain": "MG.YOUR_DOMAIN",
-    "apiKey": "MG.YOUR_KEY"
+    "apiKey": "MG.YOUR_API_KEY"
 }
 ```
 
-Once installed, you can send simple emails using the following format:
+Now you can send simple emails using the following format:
 
 ```Swift
 let email = Email(from: …, to: …, subject: …, body: …)
 try drop.mailer?.send(email)
 ```
 
-Mailgun supports both HTML and Plain Text emails.
+### SendGrid
 
-### SendGrid backend
+In addition to sending simple HTML and plain text emails,
+the SendGrid backend fully implements all the features of SendGrid's
+[V3 Mail Send API](https://sendgrid.com/docs/API_Reference/Web_API_v3/Mail/index.html).
 
-First, set up the Provider.
+First, add the Provider:
 
 ```Swift
 import Mail
@@ -105,25 +153,22 @@ let drop = Droplet()
 try drop.addProvider(Mail.Provider<SendGridClient>.self)
 ```
 
-SendGrid expects a configuration file named `sendgrid.json` with the following
-format, and will throw `.noSendGridConfig` or `.missingConfig(fieldname)` if
-configuration was not found.
+Add a Config file named `sendgrid.json` with the following format:
 
 ```json
 {
-    "apiKey": "SG.YOUR_KEY"
+    "apiKey": "SG.YOUR_API_KEY"
 }
 ```
 
-Once installed, you can send simple emails using the following format:
+Now you can send simple emails using the following format:
 
 ```Swift
 let email = Email(from: …, to: …, subject: …, body: …)
 try drop.mailer?.send(email)
 ```
 
-However, `SendGrid` supports the full range of options available in SendGrid's
-[V3 Mail Send API](https://sendgrid.com/docs/API_Reference/Web_API_v3/Mail/index.html).
+You can also send advanced emails by explicitly using `SendGridEmail` instances:
 
 ```Swift
 let email = SendGridEmail(from: "from@test.com", templateId: "welcome_email")
@@ -141,7 +186,7 @@ See `SendGridEmail.swift` for all configuration options.
 
 ### SMTPClient
 
-First, set up the Provider. Note that the security layer and stream types are
+First, add the provider. Note that the security layer and stream types are
 not loaded from config, and must be set in code.
 
 ```Swift
@@ -153,9 +198,7 @@ SMTPClient<TCPClientStream>.setSecurityLayer(.tls(nil))
 try drop.addProvider(Mail.Provider<SMTPClient<TCPClientStream>>.self)
 ```
 
-SMTPClient expects a configuration file named `smtp.json` with the following
-format, and will throw `.noSMTPConfig` or `.missingConfig(fieldname)` if
-configuration was not found.
+Add a Config file named `smtp.json` with the following format:
 
 ```json
 {
@@ -166,7 +209,7 @@ configuration was not found.
 }
 ```
 
-Once installed, you can send emails using the following format:
+Now you can send simple emails using the following format:
 
 ```Swift
 let email = Email(from: …, to: …, subject: …, body: …)
@@ -181,33 +224,35 @@ these per-send, you should use Vapor's `SMTPClient` directly.
 
 There are two options for testing your emails in development.
 
-Any emails sent by the `InMemoryMailClient` will be stored in the client's
+Emails sent by the `ConsoleMailClient` will be displayed in the console.
+
+```Swift
+import Mail
+
+let drop = Droplet()
+try drop.addProvider(Mail.Provider<ConsoleMailclient>.self)
+
+let email = Email(
+    from: "from@email.com",
+    to: "recipient@email.com"
+    subject: "Email subject",
+    body: "Hello")
+try drop.mailer?.send(email)
+// Output to console
+```
+
+Emails sent by the `InMemoryMailClient` will be stored in the client's
 `sentEmails` property.
 
 ```Swift
 import Mail
 
 let mailer = InMemoryMailClient()
-let email = Email(from: "from@email.com",
-                  to: "to1@email.com", "to2@email.com",
-                  subject: "Email Subject",
-                  body: "Hello Email")
-email.attachments.append(attachment)
+let email = Email(
+    from: "from@email.com",
+    to: "recipient@email.com",
+    subject: "Email subject",
+    body: "Hello")
 try mailer.send(email)
 print(mailer.sentEmails)
-```
-
-Emails sent by the `ConsoleMailClient` will be displayed in the console.
-
-```Swift
-import Mail
-
-let mailer = ConsoleMailClient()
-let email = Email(from: "from@email.com",
-                  to: "to1@email.com", "to2@email.com",
-                  subject: "Email Subject",
-                  body: "Hello Email")
-email.attachments.append(attachment)
-try mailer.send(email)
-// Output to console
 ```
