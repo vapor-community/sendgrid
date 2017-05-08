@@ -77,6 +77,61 @@ public final class MailgunClient {
     
 }
 
+// MARK: Mailing lists
+
+extension MailgunClient {
+    public func addSubscriber(_ email: String, toList list: String) throws {
+        let boundary = "vapor.mailgun.package.\(SecureToken().token)"
+        
+        let node = Node([
+            "subscribed": true.makeNode(),
+            "address": email.makeNode()
+            ])
+        
+        let bytes = try createMultipartData(node, boundary: boundary)
+        let headers: [HeaderKey : String] = [
+            "Authorization": authorizationHeaderValue(apiKey),
+            "Content-Type": "multipart/form-data; boundary=\(boundary)"
+        ]
+        let response = try client.post(path: "/v3/lists/\(list)/members", headers: headers, body: Body.data(bytes))
+        switch response.status.statusCode {
+        case 200, 202: return
+        case 400: throw MailgunError.badRequest(try response.json?.extract())
+        case 401: throw MailgunError.unauthorized
+        case 500, 503: throw MailgunError.serverError
+        default: throw MailgunError.unexpectedServerResponse
+        }
+    }
+    
+    public func send(_ email: MailgunEmail, toList list: String) throws {
+        // To send an email to a mailgun mailing list we have to set the
+        // To field to the list's email.
+        var emailNode = try email.makeNode()
+        emailNode["to"] = list.makeNode()
+        
+        let boundary = "vapor.mailgun.package.\(SecureToken().token)"
+        let bytes = try createMultipartData(emailNode, boundary: boundary)
+        let headers: [HeaderKey : String] = [
+            "Authorization": authorizationHeaderValue(apiKey),
+            "Content-Type": "multipart/form-data; boundary=\(boundary)"
+        ]
+        let response = try client.post(path: "/v3/\(domain)/messages", headers: headers, body: Body.data(bytes))
+        switch response.status.statusCode {
+        case 200, 202: return
+        case 400: throw MailgunError.badRequest(try response.json?.extract())
+        case 401: throw MailgunError.unauthorized
+        case 500, 503: throw MailgunError.serverError
+        default: throw MailgunError.unexpectedServerResponse
+        }
+    }
+    
+    public func send(_ email: SMTP.Email, toList list: String) throws {
+        // Convert to Mailgun Emails and then send
+        try send(MailgunEmail(from: email), toList: list)
+    }
+    
+}
+
 extension MailgunClient: MailClientProtocol {
     
     public static func configure(_ config: Settings.Config) throws {
