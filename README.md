@@ -104,6 +104,10 @@ and simply calling:
 drop.mailer?.send(email)
 ```
 
+If `drop.mailer` is `nil`, the user has not set up any email backend. If email
+is an integral part of your Provider, you can check for this at set-up time
+and throw a configuration error if there's no mailer present.
+
 ## 📘 Backends
 
 ### Mailgun
