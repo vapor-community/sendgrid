@@ -2,13 +2,13 @@
 
 ![Swift](http://img.shields.io/badge/swift-3.1-brightgreen.svg)
 ![Vapor](http://img.shields.io/badge/vapor-1.5-brightgreen.svg)
-![Travis](https://travis-ci.org/bygri/vapor-mail.svg?branch=master)
+![Travis](https://travis-ci.org/vapor-community/mail.svg?branch=master)
 
 [Render](#rendering-emails) HTML and plaintext emails using Vapor's views, then
 [send](#sending-emails) them with confidence using your choice of native API
 backends.
 
-[Developers](#third-party-developers) can depend on `vapor-mail` to enable
+[Developers](#third-party-developers) can depend on `mail` to enable
 backend-agnostic email sending in their Providers.
 
 Mail includes swappable backends for the following services:
@@ -97,7 +97,7 @@ email.attachments.append(attachment)
 ### Third-party developers
 
 Enable email-sending in your own Providers without tying your end-users to any
-specific email backend by adding a dependency on `vapor-mail`
+specific email backend by adding a dependency on `mail`
 and simply calling:
 
 ```Swift
