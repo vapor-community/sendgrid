@@ -1,15 +1,8 @@
 # Mail
 
 ![Swift](http://img.shields.io/badge/swift-3.1-brightgreen.svg)
-![Vapor](http://img.shields.io/badge/vapor-1.5-brightgreen.svg)
+![Vapor](http://img.shields.io/badge/vapor-2.0-brightgreen.svg)
 ![Travis](https://travis-ci.org/vapor-community/mail.svg?branch=master)
-
----
-
-**Vapor 2**: this package is *not* compatible with Vapor 2 beta. Once Vapor 2
-moves out of beta, this package will be updated.
-
----
 
 [Render](#rendering-emails) HTML and plaintext emails using Vapor's views, then
 [send](#sending-emails) them with confidence using your choice of native API

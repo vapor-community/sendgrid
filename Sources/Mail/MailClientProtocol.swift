@@ -30,10 +30,10 @@ public protocol MailClientProtocol {
     static func configure(_ config: Config) throws
 
     /*
-        Called during the Provider's `boot(_:)` method. Use this method to
-        store a reference to the Droplet, if you need it.
+        Called during the Provider's `boot(_: Droplet)` method. Use this method
+        to store a reference to the Droplet, if you need it.
     */
-    static func boot(_ drop: Droplet)
+    static func boot(_ drop: Droplet) throws
 
     /*
         MailClient must be able to init without arguments. Store configuration

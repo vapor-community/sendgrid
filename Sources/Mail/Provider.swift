@@ -2,27 +2,25 @@ import Vapor
 
 public final class Provider<T: MailClientProtocol>: Vapor.Provider {
 
-    public convenience init(config: Config) throws {
-        try T.configure(config)
-        try self.init()
+    // TODO: replace with a `static let` when Swift supports them in generic types
+    public static var repositoryName: String {
+        return "mail"
     }
 
-    public init() throws {}
+    public init(config: Configs.Config) throws {
+        try T.configure(config)
+    }
 
-    public func boot(_ drop: Droplet) {
-        T.boot(drop)
+    public func boot(_ config: Vapor.Config) throws {}
+
+    public func boot(_ drop: Droplet) throws {
+        try T.boot(drop)
         if let existing = drop.mailer {
             print("\(String(describing: T.self)) will overwrite existing mailer: \(String(describing: existing))")
         }
         drop.mailer = T.self
     }
 
-    public func afterInit(_ drop: Droplet) {
-
-    }
-
-    public func beforeRun(_ drop: Droplet) {
-
-    }
+    public func beforeRun(_ drop: Droplet) throws {}
 
 }
