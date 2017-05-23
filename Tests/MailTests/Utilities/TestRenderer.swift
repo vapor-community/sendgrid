@@ -2,15 +2,17 @@ import Vapor
 
 final class TestRenderer: ViewRenderer {
 
-    init(viewsDir: String) {}
-
-    func make(_ path: String, _ context: Node) throws -> Vapor.View {
-        return try make(path, context, for: nil)
+    enum Error: Swift.Error {
+        case noContextValue
     }
 
-    func make(_ path: String, _ context: Node, for provider: Provider.Type?) throws -> View {
-        return try View(data: "\(context)".makeBytes())
+    var shouldCache = false
 
+    func make(_ path: String, _ context: Node) throws -> View {
+        guard let value: String = try context.get("value") else {
+          throw Error.noContextValue
+        }
+        return View(data: "\(value)".makeBytes())
     }
 
 }

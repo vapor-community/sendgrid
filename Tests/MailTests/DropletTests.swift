@@ -46,7 +46,7 @@ class DropletTests: XCTestCase {
     ]
 
     func testSendEmail() throws {
-        let drop = try makeDroplet()
+        let drop = try Droplet()
         drop.mailer = DummyMailClient.self
         let email = Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
@@ -60,7 +60,7 @@ class DropletTests: XCTestCase {
     }
 
     func testSendNativeEmail() throws {
-        let drop = try makeDroplet()
+        let drop = try Droplet()
         drop.mailer = DummyMailClient.self
         let email = Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
@@ -84,31 +84,25 @@ class DropletTests: XCTestCase {
                 "string": "configured"
             ],
         ])
-        let drop = try makeDroplet(config: config)
-        try drop.addProvider(Mail.Provider<DummyMailClient>.self)
+        try config.addProvider(Mail.Provider<DummyMailClient>.self)
         XCTAssertEqual(DummyMailClient.configurationString, "configured")
     }
 
     func testViewEmail() throws {
-        let drop = try makeDroplet()
-        drop.view = TestRenderer(viewsDir: "neverland")
+        let config = Config([])
+        let drop = try Droplet(
+            config: config,
+            view: TestRenderer()
+        )
         drop.mailer = DummyMailClient.self
         let email = try Email(from: "from@email.com",
                               to: "to1@email.com", "to2@email.com",
                               subject: "Email Subject",
                               body: EmailBody(drop, type: .html, view: "email", [
-                                  "name": "Peter Pan",
+                                  "value": "Peter Pan",
                               ]))
-        XCTAssertEqual(email.body.content, "object([\"name\": Node.Node.string(\"Peter Pan\")])")
+        XCTAssertEqual(email.body.content, "Peter Pan")
         try drop.mailer?.send(email)
     }
 
-}
-
-extension DropletTests {
-    func makeDroplet(config: Config? = nil) throws -> Droplet {
-        let drop = Droplet(arguments: ["/dummy/path/", "prepare"], config: config)
-        try drop.runCommands()
-        return drop
-    }
 }

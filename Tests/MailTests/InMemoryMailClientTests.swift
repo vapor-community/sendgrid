@@ -42,8 +42,9 @@ class InMemoryMailClientTests: XCTestCase {
     }
 
     func testProvider() throws {
-        let drop = try makeDroplet()
-        try drop.addProvider(Mail.Provider<InMemoryMailClient>.self)
+      let config = Config([])
+      try config.addProvider(Mail.Provider<InMemoryMailClient>.self)
+      let drop = try Droplet(config)
 
         let email = SMTP.Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
@@ -56,12 +57,4 @@ class InMemoryMailClientTests: XCTestCase {
         try drop.mailer?.send(email)
     }
 
-}
-
-extension InMemoryMailClientTests {
-    func makeDroplet() throws -> Droplet {
-        let drop = Droplet(arguments: ["/dummy/path/", "prepare"])
-        try drop.runCommands()
-        return drop
-    }
 }

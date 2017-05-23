@@ -34,8 +34,9 @@ class ConsoleMailClientTests: XCTestCase {
     }
 
     func testProvider() throws {
-        let drop = try makeDroplet()
-        try drop.addProvider(Mail.Provider<ConsoleMailClient>.self)
+        let config = Config([])
+        try config.addProvider(Mail.Provider<ConsoleMailClient>.self)
+        let drop = try Droplet(config)
 
         let email = SMTP.Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
@@ -48,12 +49,4 @@ class ConsoleMailClientTests: XCTestCase {
         try drop.mailer?.send(email)
     }
 
-}
-
-extension ConsoleMailClientTests {
-    func makeDroplet() throws -> Droplet {
-        let drop = Droplet(arguments: ["/dummy/path/", "prepare"])
-        try drop.runCommands()
-        return drop
-    }
 }

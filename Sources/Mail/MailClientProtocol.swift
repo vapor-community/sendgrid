@@ -23,9 +23,9 @@ import Vapor
 public protocol MailClientProtocol {
 
     /*
-        MailClient can be configured here. The value passed is `drop.config`,
-        as loaded by the Provider; it is up to the client to extract and store
-        configuration, and throw an error on any missing config.
+        MailClient can be configured here. The value passed is the Config object
+        to which the Provider was added; it is up to the client to extract and
+        store configuration, and throw an error on any missing config.
     */
     static func configure(_ config: Config) throws
 

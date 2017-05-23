@@ -32,7 +32,7 @@ or another templating language.
 ```Swift
 import Mail
 
-let drop = Droplet()
+let drop = try Droplet()
 
 let body = try EmailBody(drop, type: .html, view: "email", [
     "firstName": "Peter",
@@ -58,8 +58,9 @@ out your provider at any time.
 ```Swift
 import Mail
 
-let drop = Droplet()
-try drop.addProvider(Mail.Provider<ConsoleMailclient>.self)
+let config = try Config()
+try config.addProvider(Mail.Provider<ConsoleMailclient>.self)
+let drop = try Droplet(config)
 
 let email = Email(
     from: "from@email.com",
@@ -121,8 +122,9 @@ First, add the Provider:
 import Mail
 import Mailgun
 
-let drop = Droplet()
-try drop.addProvider(Mail.Provider<MailgunClient>.self)
+let config = try Config()
+try config.addProvider(Mail.Provider<MailgunClient>.self)
+let drop = try Droplet()
 ```
 
 Add a Config file named `mailgun.json` with the following format:
@@ -153,8 +155,9 @@ First, add the Provider:
 import Mail
 import SendGrid
 
-let drop = Droplet()
-try drop.addProvider(Mail.Provider<SendGridClient>.self)
+let config = try Config()
+try config.addProvider(Mail.Provider<SendGridClient>.self)
+let drop = try Droplet()
 ```
 
 Add a Config file named `sendgrid.json` with the following format:
@@ -197,9 +200,10 @@ not loaded from config, and must be set in code.
 import Mail
 import SMTPClient
 
-let drop = Droplet()
 SMTPClient<TCPClientStream>.setSecurityLayer(.tls(nil))
-try drop.addProvider(Mail.Provider<SMTPClient<TCPClientStream>>.self)
+let config = try Config()
+try config.addProvider(Mail.Provider<SMTPClient<TCPClientStream>>.self)
+let drop = try Droplet(config)
 ```
 
 Add a Config file named `smtp.json` with the following format:
@@ -233,8 +237,9 @@ Emails sent by the `ConsoleMailClient` will be displayed in the console.
 ```Swift
 import Mail
 
-let drop = Droplet()
-try drop.addProvider(Mail.Provider<ConsoleMailclient>.self)
+let config = try Config()
+try config.addProvider(Mail.Provider<ConsoleMailclient>.self)
+let drop = try Droplet(config)
 
 let email = Email(
     from: "from@email.com",
