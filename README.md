@@ -193,16 +193,15 @@ See `SendGridEmail.swift` for all configuration options.
 
 ### SMTP
 
-First, add the provider. Note that the security layer and stream types are
-not loaded from config, and must be set in code.
+First, add the provider. Note that the client is named `SMTPMailClient` to
+avoid conflicts with Vapor's own `SMTPClient`.
 
 ```Swift
 import Mail
 import SMTPClient
 
-SMTPClient<TCPClientStream>.setSecurityLayer(.tls(nil))
 let config = try Config()
-try config.addProvider(Mail.Provider<SMTPClient<TCPClientStream>>.self)
+try config.addProvider(Mail.Provider<SMTPMailClient>.self)
 let drop = try Droplet(config)
 ```
 
@@ -210,7 +209,8 @@ Add a Config file named `smtp.json` with the following format:
 
 ```json
 {
-    "host": "smtp.host.com",
+    "scheme": "smtp",
+    "hostname": "host.com",
     "port": 465,
     "username": "username",
     "password": "password"
@@ -224,9 +224,9 @@ let email = Email(from: …, to: …, subject: …, body: …)
 try drop.mailer?.send(email)
 ```
 
-All connections will use the host, port, username, password, stream type and
-security layer that you set with the Provider. If you need to customise any of
-these per-send, you should use Vapor's `SMTPClient` directly.
+All connections will use the scheme, host, port, username and password that you
+set with the Provider. If you need to customise any of these per-send, you
+should use Vapor's `SMTPClient` directly.
 
 ### Development backends
 
