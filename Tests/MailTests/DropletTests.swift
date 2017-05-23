@@ -46,7 +46,7 @@ class DropletTests: XCTestCase {
     ]
 
     func testSendEmail() throws {
-        let drop = try Droplet()
+        let drop = try Droplet(Config([]))
         drop.mailer = DummyMailClient.self
         let email = Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
@@ -60,7 +60,7 @@ class DropletTests: XCTestCase {
     }
 
     func testSendNativeEmail() throws {
-        let drop = try Droplet()
+        let drop = try Droplet(Config([]))
         drop.mailer = DummyMailClient.self
         let email = Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
