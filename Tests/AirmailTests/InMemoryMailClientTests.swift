@@ -1,18 +1,18 @@
 import XCTest
-@testable import Mail
+@testable import Airmail
 import SMTP
-@testable import Vapor
+import Vapor
 
 class InMemoryMailClientTests: XCTestCase {
     static let allTests = [
         ("testSendEmail", testSendEmail),
         ("testSendMultipleEmails", testSendMultipleEmails),
-        ("testProvider", testProvider),
+        ("testDroplet", testDroplet),
     ]
 
     func testSendEmail() throws {
         let mailer = InMemoryMailClient()
-        let email = SMTP.Email(from: "from@email.com",
+        let email = Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
                           subject: "Email Subject",
                           body: "Hello Email")
@@ -29,9 +29,9 @@ class InMemoryMailClientTests: XCTestCase {
     func testSendMultipleEmails() throws {
         let mailer = InMemoryMailClient()
         let emails = [
-            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email1", body: "Email1 body"),
-            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email2", body: "Email2 body"),
-            SMTP.Email(from: "from@email.com", to: "to@email.com", subject: "Email3", body: "Email3 body"),
+            Email(from: "from@email.com", to: "to@email.com", subject: "Email1", body: "Email1 body"),
+            Email(from: "from@email.com", to: "to@email.com", subject: "Email2", body: "Email2 body"),
+            Email(from: "from@email.com", to: "to@email.com", subject: "Email3", body: "Email3 body"),
         ]
         try mailer.send(emails)
 
@@ -41,12 +41,10 @@ class InMemoryMailClientTests: XCTestCase {
         XCTAssert(mailer.sentEmails[2].subject == "Email3")
     }
 
-    func testProvider() throws {
-      let config = Config([])
-      try config.addProvider(Mail.Provider<InMemoryMailClient>.self)
-      let drop = try Droplet(config)
+    func testDroplet() throws {
+        let drop = try Droplet(mail: InMemoryMailClient())
 
-        let email = SMTP.Email(from: "from@email.com",
+        let email = Email(from: "from@email.com",
                           to: "to1@email.com", "to2@email.com",
                           subject: "Email Subject",
                           body: "Hello Email")
@@ -54,7 +52,7 @@ class InMemoryMailClientTests: XCTestCase {
                                          contentType: "dummy/data",
                                          body: [1,2,3,4,5])
         email.attachments.append(attachment)
-        try drop.mailer?.send(email)
+        try drop.mail.send(email)
     }
 
 }

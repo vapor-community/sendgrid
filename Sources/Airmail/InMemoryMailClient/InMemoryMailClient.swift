@@ -5,12 +5,12 @@ import Vapor
     A development-only MailClient which does not send emails; rather, it
     stores them in the `sentEmails` property for debugging purposes.
 */
-public final class InMemoryMailClient: MailClientProtocol {
+public final class InMemoryMailClient: MailProtocol {
 
     /**
         Every email 'sent' by this client is stored in this array.
     */
-    public private(set) var sentEmails: [SMTP.Email] = []
+    public private(set) var sentEmails: [Email] = []
 
     public static func configure(_ config: Config) throws {}
 
@@ -18,7 +18,7 @@ public final class InMemoryMailClient: MailClientProtocol {
 
     public init() {}
 
-    public func send(_ emails: [SMTP.Email]) throws {
+    public func send(_ emails: [Email]) throws {
         sentEmails += emails
     }
 

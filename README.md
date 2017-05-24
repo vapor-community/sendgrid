@@ -15,7 +15,6 @@ Mail includes swappable backends for the following services:
 
 * [`Mailgun`](#mailgun), a basic implementation for sending emails through Mailgun's V3 API.
 * [`SendGrid`](#sendgrid), a fully-featured implementation of the SendGrid V3 Mail Send API.
-* [`SMTPClient`](#smtp), which conforms Vapor's built-in SMTP Client to this backend.
 
 There are also two [development-only](#development-backends) backends:
 
@@ -191,43 +190,6 @@ if let sendgrid = try drop.mailer.make() as? SendGridClient {
 
 See `SendGridEmail.swift` for all configuration options.
 
-### SMTP
-
-First, add the provider. Note that the client is named `SMTPMailClient` to
-avoid conflicts with Vapor's own `SMTPClient`.
-
-```Swift
-import Mail
-import SMTPClient
-
-let config = try Config()
-try config.addProvider(Mail.Provider<SMTPMailClient>.self)
-let drop = try Droplet(config)
-```
-
-Add a Config file named `smtp.json` with the following format:
-
-```json
-{
-    "scheme": "smtp",
-    "hostname": "host.com",
-    "port": 465,
-    "username": "username",
-    "password": "password"
-}
-```
-
-Now you can send simple emails using the following format:
-
-```Swift
-let email = Email(from: …, to: …, subject: …, body: …)
-try drop.mailer?.send(email)
-```
-
-All connections will use the scheme, host, port, username and password that you
-set with the Provider. If you need to customise any of these per-send, you
-should use Vapor's `SMTPClient` directly.
-
 ### Development backends
 
 There are two options for testing your emails in development.
@@ -237,16 +199,14 @@ Emails sent by the `ConsoleMailClient` will be displayed in the console.
 ```Swift
 import Mail
 
-let config = try Config()
-try config.addProvider(Mail.Provider<ConsoleMailclient>.self)
-let drop = try Droplet(config)
+let drop = try Droplet(mail: ConsoleMailClient())
 
 let email = Email(
     from: "from@email.com",
     to: "recipient@email.com"
     subject: "Email subject",
     body: "Hello")
-try drop.mailer?.send(email)
+try drop.mail.send(email)
 // Output to console
 ```
 
