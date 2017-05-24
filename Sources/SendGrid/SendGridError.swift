@@ -10,22 +10,13 @@ public enum SendGridError: Swift.Error {
         public let field: String?
         public let helpMessage: String?
 
-        public init(node: Node, in context: Context) throws {
-            message = try node.extract("message")
-            field = try node.extract("field")
-            helpMessage = try node.extract("help")
+        public init(node: Node) throws {
+            message = try node.get("message")
+            field = try node.get("field")
+            helpMessage = try node.get("help")
         }
     }
 
-    /*
-        No configuration for SendGrid could be found at all.
-    */
-    case noSendGridConfig
-    /*
-        A required configuration key was missing. The associated value is the
-        name of the missing key.
-    */
-    case missingConfig(String)
     /*
         SendGridClient was instantiated without a Vapor Client. This would
         normally be set via Provider, but if you are instantiating directly,
