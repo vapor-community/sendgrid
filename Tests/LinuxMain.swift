@@ -1,14 +1,9 @@
 #if os(Linux)
 
 import XCTest
-
-@testable import MailTests
-@testable import SendGridTests
-@testable import SMTPClientTests
+@testable import AirmailTests
 
 XCTMain([
-    // MailClientProtocol Tests
-    testCase(DropletTests.allTests),
 
     // ConsoleMailClientTests
     testCase(ConsoleMailClientTests.allTests),
@@ -16,11 +11,9 @@ XCTMain([
     // InMemoryMailClientTests
     testCase(InMemoryMailClientTests.allTests),
 
-    // SendGridClient Tests
-    testCase(SendGridClientTests.allTests),
+    // SendGrid Tests
+    testCase(SendGridTests.allTests),
 
-    // SMTPClient Tests
-    testCase(SMTPClientTests.allTests),
 ])
 
 #endif

@@ -6,18 +6,14 @@ import Vapor
     A development-only MailClient which does not send emails; rather, it
     logs them to the console for debugging purposes.
 */
-public final class ConsoleMailClient: MailClientProtocol {
+public final class ConsoleMailClient: MailProtocol {
 
     let console = Terminal(arguments: [])
     let style = ConsoleStyle.custom(.yellow)
 
-    public static func configure(_ config: Config) throws {}
-
-    public static func boot(_ drop: Droplet) {}
-
     public init() {}
 
-    public func send(_ emails: [SMTP.Email]) throws {
+    public func send(_ emails: [Email]) throws {
         emails.forEach { email in
             console.output("SEND EMAIL", style: style, newLine: true)
             console.output("From: \(email.from)", style: style, newLine: true)
@@ -37,4 +33,10 @@ public final class ConsoleMailClient: MailClientProtocol {
         }
     }
 
+}
+
+extension ConsoleMailClient: ConfigInitializable {
+    public convenience init(config: Config) throws {
+        self.init()
+    }
 }
