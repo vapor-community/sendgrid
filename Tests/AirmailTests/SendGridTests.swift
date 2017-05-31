@@ -1,32 +1,33 @@
 import XCTest
-import Mail
+import Airmail
 import SMTP
-import SendGrid
 @testable import Vapor
 
 // Test inbox: https://www.mailinator.com/inbox2.jsp?public_to=vapor-sendgrid
 
-class SendGridClientTests: XCTestCase {
+class SendGridTests: XCTestCase {
     static let allTests = [
-        ("testProvider", testProvider),
+        ("testDroplet", testDroplet),
     ]
 
     let apiKey = "SG.YOUR_KEY" // Set here, but don't commit to git!
 
-    func testProvider() throws {
+    func testDroplet() throws {
         if apiKey == "SG.YOUR_KEY" {
             print("Not testing SendGrid as no API Key is set")
             return
         }
-        let config = Config([
+        let config: Config = try [
             "sendgrid": [
-                "apiKey": Node(apiKey)
+                "apiKey": apiKey
             ],
-        ])
-        let drop = try makeDroplet(config: config)
-        try drop.addProvider(Mail.Provider<SendGridClient>.self)
+        ].makeNode(in: nil).converted()
+        let drop = try Droplet(
+          config: config,
+          mail: SendGrid(config: config)
+        )
 
-        let email = SMTP.Email(from: "vapor-sendgrid-from@mailinator.com",
+        let email = Email(from: "vapor-sendgrid-from@mailinator.com",
                           to: "vapor-sendgrid@mailinator.com",
                           subject: "Email Subject",
                           body: "Hello Email")
@@ -34,15 +35,7 @@ class SendGridClientTests: XCTestCase {
                                          contentType: "dummy/data",
                                          body: [1,2,3,4,5])
         email.attachments.append(attachment)
-        try drop.mailer?.send(email)
+        try drop.mail.send(email)
     }
 
-}
-
-extension SendGridClientTests {
-    func makeDroplet(config: Config? = nil) throws -> Droplet {
-        let drop = Droplet(arguments: ["/dummy/path/", "prepare"], config: config)
-        try drop.runCommands()
-        return drop
-    }
 }

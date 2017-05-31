@@ -38,31 +38,3 @@ public struct Personalization {
     }
 
 }
-
-extension Personalization: NodeRepresentable {
-
-    public func makeNode(context: Context) throws -> Node {
-        var node = Node([:])
-        node["to"] = try Node(to.map { try $0.makeNode() })
-        if !cc.isEmpty {
-            node["cc"] = try Node(cc.map { try $0.makeNode() })
-        }
-        if !bcc.isEmpty {
-            node["bcc"] = try Node(bcc.map { try $0.makeNode() })
-        }
-        if let subject = subject {
-            node["subject"] = Node(subject)
-        }
-        if !headers.isEmpty {
-            node["headers"] = try headers.makeNode()
-        }
-        if !substitutions.isEmpty {
-            node["substitutions"] = try substitutions.makeNode()
-        }
-        if let sendAt = sendAt {
-            node["send_at"] = Node(sendAt.timeIntervalSince1970)
-        }
-        return node
-    }
-
-}

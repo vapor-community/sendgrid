@@ -2,90 +2,82 @@ import Vapor
 
 extension SendGridEmail: NodeRepresentable {
 
-    public func makeNode(context: Context) throws -> Node {
+    public func makeNode(in context: Context?) throws -> Node {
         var obj = Node([:])
-        // Personalizations
-        obj["personalizations"] = try personalizations.makeNode()
-        // From
-        obj["from"] = try from.makeNode()
-        // Reply To
+
+        // Core settings
+        try obj.set("personalizations", personalizations)
+        try obj.set("from", from)
         if let replyTo = replyTo {
-            obj["reply_to"] = try replyTo.makeNode()
+            try obj.set("reply_to", replyTo)
         }
-        // Subject
         if let subject = subject {
-            obj["subject"] = Node(subject)
+            try obj.set("subject", subject)
         }
-        // Content
         if !content.isEmpty {
-            obj["content"] = Node(content.map {
+            try obj.set("content", content.map {
                 switch $0.type {
                 case .html:
-                    return Node(["type": "text/html",
-                                 "value": $0.content.makeNode()])
+                    return ["type": "text/html", "value": $0.content]
                 case .plain:
-                    return Node(["type": "text/plain",
-                                 "value": $0.content.makeNode()])
+                    return ["type": "text/plain", "value": $0.content]
                 }
             })
         }
-        // Attachments
         if !attachments.isEmpty {
-            obj["attachments"] = Node(attachments.map {
-                Node([
-                    "filename": $0.emailAttachment.filename.makeNode(),
-                    "content": Node($0.emailAttachment.body.base64String),
-                    "type": $0.emailAttachment.contentType.makeNode(),
-                ])
+            try obj.set("attachments", attachments.map {
+                [
+                    "filename": $0.emailAttachment.filename,
+                    "content": $0.emailAttachment.body.base64Encoded.makeString(),
+                    "type": $0.emailAttachment.contentType
+                ]
             })
         }
-        print(String(describing: obj["attachments"]))
-        // Template Id
         if let templateId = templateId {
-            obj["template_id"] = Node(templateId)
+            try obj.set("template_id", templateId)
         }
-        // Sections
         if !sections.isEmpty {
-            obj["sections"] = try sections.makeNode()
+            try obj.set("sections", sections)
         }
-        // Categories
         if !categories.isEmpty {
-            obj["categories"] = try categories.makeNode()
+            try obj.set("categories", categories)
         }
-        // Send At
         if let sendAt = sendAt {
-            obj["send_at"] = Node(sendAt.timeIntervalSince1970)
+            try obj.set("send_at", sendAt.timeIntervalSince1970)
         }
-        // Batch Id
         if let batchId = batchId {
-            obj["batch_id"] = Node(batchId)
+            try obj.set("bach_id", batchId)
         }
-        // asm
         switch unsubscribeHandling {
         case let .usingGroupId(groupId, groups):
-            obj["asm", "group_id"] = Node(groupId)
-            obj["asm", "groups_to_display"] = Node(groups.map { Node($0) })
+            try obj.set("asm", [
+                "group_id": groupId,
+                "groups_to_display": groups
+            ])
         case .default:
             break
         }
-        // IP Pool Name
         if let ipPoolName = ipPoolName {
-            obj["ip_pool_name"] = Node(ipPoolName)
+            try obj.set("ip_pool_name", ipPoolName)
         }
-        /// MAIL SETTINGS
+
+        // Mail settings
         var ms = Node([:])
-        // BCC
         if let bccFirst = bccFirst {
-            ms["bcc", "enable"] = true
-            ms["bcc", "email"] = try bccFirst.makeNode()
+            try ms.set("bcc", [
+                "enable": true,
+                "email": bccFirst
+            ])
         }
-        // Bypass List Management
         if bypassListManagement {
-            ms["bypass_list_management", "enable"] = true
+            try ms.set("bypass_list_management", [
+                "enable": true
+            ])
         }
-        // Footer
         if !footer.isEmpty {
-            ms["footer", "enable"] = true
+            try ms.set("footer", [
+                "enable": true
+            ])
             footer.forEach {
                 switch $0.type {
                 case .html:
@@ -95,63 +87,67 @@ extension SendGridEmail: NodeRepresentable {
                 }
             }
         }
-        // Sandbox Mode
         if sandboxMode {
-            ms["sandbox_mode", "enable"] = true
+            try ms.set("sandbox_mode", [
+                "enable": true
+            ])
         }
-        // Spam Check
         switch spamCheckMode {
         case let .enabled(threshold, url):
-            ms["spam_check", "enable"] = true
-            ms["spam_check", "threshold"] = Node(threshold)
-            ms["spam_check", "post_to_url"] = Node(url)
+            try ms.set("spam_check", [
+                "enable": true,
+                "threshold": threshold,
+                "post_to_url": url
+            ])
         case .disabled:
             break
         }
-        obj["mail_settings"] = ms
-        /// TRACKING SETTINGS
+        try obj.set("mail_settings", ms)
+
+        // Tracking settings
         var ts = Node([:])
-        // Click Tracking
         switch clickTracking {
         case .enabled:
-            ts["click_tracking", "enable"] = true
-            ts["click_tracking", "enable_text"] = true
+            try ts.set("click_tracking", [
+                "enable": true,
+                "enable_text": true
+            ])
         case .htmlOnly:
-            ts["click_tracking", "enable"] = true
-            ts["click_tracking", "enable_text"] = false
+            try ts.set("click_tracking", [
+                "enable": true,
+                "enable_text": false
+            ])
         case .disabled:
             break
         }
-        // Open Tracking
         switch openTracking {
         case .enabled(let substitutionTag):
             ts["open_tracking", "enable"] = true
-            ts["open_tracking", "substitution_tag"] = substitutionTag?.makeNode()
+            ts["open_tracking", "substitution_tag"] = substitutionTag?.makeNode(in: context)
         case .disabled:
             break
         }
-        // Subscription Tracking
         switch subscriptionManagement {
         case let .appending(text, html):
             ts["subscription_tracking", "enable"] = true
-            ts["subscription_tracking", "text"] = text?.makeNode()
-            ts["subscription_tracking", "html"] = html?.makeNode()
+            ts["subscription_tracking", "text"] = text?.makeNode(in: context)
+            ts["subscription_tracking", "html"] = html?.makeNode(in: context)
         case .enabled(let replacingTag):
             ts["subscription_tracking", "enable"] = true
-            ts["subscription_tracking", "substitution_tag"] = Node(replacingTag)
+            ts["subscription_tracking", "substitution_tag"] = replacingTag.makeNode(in: context)
         case .disabled:
             break
         }
-        // Google Analytics
         if let ga = googleAnalytics {
             ts["ganalytics", "enable"] = true
-            ts["ganalytics", "utm_source"] = ga.source?.makeNode()
-            ts["ganalytics", "utm_medium"] = ga.medium?.makeNode()
-            ts["ganalytics", "utm_term"] = ga.term?.makeNode()
-            ts["ganalytics", "utm_content"] = ga.content?.makeNode()
-            ts["ganalytics", "utm_campaign"] = ga.campaign?.makeNode()
+            ts["ganalytics", "utm_source"] = ga.source?.makeNode(in: context)
+            ts["ganalytics", "utm_medium"] = ga.medium?.makeNode(in: context)
+            ts["ganalytics", "utm_term"] = ga.term?.makeNode(in: context)
+            ts["ganalytics", "utm_content"] = ga.content?.makeNode(in: context)
+            ts["ganalytics", "utm_campaign"] = ga.campaign?.makeNode(in: context)
         }
-        obj["tracking_settings"] = ts
+        try obj.set("tracking_settings", ts)
+
         return obj
     }
 

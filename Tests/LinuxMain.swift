@@ -3,11 +3,8 @@
 import XCTest
 
 @testable import AirmailTests
-// @testable import SendGridTests
 
 XCTMain([
-    // MailClientProtocol Tests
-    // testCase(DropletTests.allTests),
 
     // ConsoleMailClientTests
     testCase(ConsoleMailClientTests.allTests),
@@ -15,8 +12,8 @@ XCTMain([
     // InMemoryMailClientTests
     testCase(InMemoryMailClientTests.allTests),
 
-    // SendGridClient Tests
-    // testCase(SendGridClientTests.allTests),
+    // SendGrid Tests
+    testCase(SendGridTests.allTests),
 
 ])
 
