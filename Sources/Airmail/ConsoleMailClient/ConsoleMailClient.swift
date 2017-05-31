@@ -11,10 +11,6 @@ public final class ConsoleMailClient: MailProtocol {
     let console = Terminal(arguments: [])
     let style = ConsoleStyle.custom(.yellow)
 
-    public static func configure(_ config: Config) throws {}
-
-    public static func boot(_ drop: Droplet) {}
-
     public init() {}
 
     public func send(_ emails: [Email]) throws {
@@ -37,4 +33,10 @@ public final class ConsoleMailClient: MailProtocol {
         }
     }
 
+}
+
+extension ConsoleMailClient: ConfigInitializable {
+    public convenience init(config: Config) throws {
+        self.init()
+    }
 }

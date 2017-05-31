@@ -12,14 +12,16 @@ public final class InMemoryMailClient: MailProtocol {
     */
     public private(set) var sentEmails: [Email] = []
 
-    public static func configure(_ config: Config) throws {}
-
-    public static func boot(_ drop: Droplet) {}
-
     public init() {}
 
     public func send(_ emails: [Email]) throws {
         sentEmails += emails
     }
 
+}
+
+extension InMemoryMailClient: ConfigInitializable {
+    public convenience init(config: Config) throws {
+        self.init()
+    }
 }

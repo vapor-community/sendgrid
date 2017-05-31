@@ -7,7 +7,6 @@ let package = Package(
     ],
     exclude: [
         "Sources/Airmail/Mailgun",
-        "Sources/Airmail/SendGrid",
         "Tests/MailgunTests",
         "Tests/SendGridTests",
     ]
