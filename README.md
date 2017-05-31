@@ -170,7 +170,7 @@ email.personalizations.append(Personalization([
 ]))
 email.sandboxMode = true
 email.openTracking = .enabled(nil)
-if let sendgrid = try drop.mailer as? SendGrid {
+if let sendgrid = try drop.mail as? SendGrid {
     sendgrid.send(email)
 }
 ```
