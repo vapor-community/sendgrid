@@ -27,7 +27,6 @@ class SendGridTests: XCTestCase {
             XCTFail()
             return
         }
-        print("sg is \(sg)")
     }
 
     func testSend() throws {
