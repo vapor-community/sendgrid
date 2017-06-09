@@ -1,4 +1,5 @@
-Packages
 .build
+Package.pins
+
 .DS_Store
 *.xcodeproj
