@@ -52,8 +52,3 @@ class SendGridTests: XCTestCase {
     }
 
 }
-
-
-extension SendGrid {
-    var isNative: Bool { return true }
-}
