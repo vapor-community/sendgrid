@@ -1,5 +1,5 @@
 import XCTest
-import Airmail
+import SendGrid
 import SMTP
 @testable import Vapor
 
@@ -23,7 +23,7 @@ class SendGridTests: XCTestCase {
           config: config,
           mail: SendGrid(config: config)
         )
-        guard let sg = drop.mail as? SendGrid else {
+        guard let _ = drop.mail as? SendGrid else {
             XCTFail()
             return
         }
@@ -51,9 +51,4 @@ class SendGridTests: XCTestCase {
         try sendgrid.send(email)
     }
 
-}
-
-
-extension SendGrid {
-    var isNative: Bool { return true }
 }
