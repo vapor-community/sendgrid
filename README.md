@@ -2,7 +2,7 @@
 
 ![Swift](http://img.shields.io/badge/swift-3.1-brightgreen.svg)
 ![Vapor](http://img.shields.io/badge/vapor-2.0-brightgreen.svg)
-[![CircleCI](https://circleci.com/gh/vapor-community/airmail.svg?style=svg)](https://circleci.com/gh/vapor-community/airmail)
+[![CircleCI](https://circleci.com/gh/vapor-community/sendgrid-provider.svg?style=svg)](https://circleci.com/gh/vapor-community/sendgrid-provider)
 
 Adds a mail backend for SendGrid to the Vapor web framework. Send simple emails,
 or leverage the full capabilities of SendGrid's V3 API.
@@ -52,6 +52,6 @@ and click tracking, templating, and multiple recipients.
 ```swift
 if let sendgrid = drop.mail as? SendGrid {
   let email = SendGridEmail(…)
-  sendgrid.send(email)
+  try sendgrid.send(email)
 }
 ```
