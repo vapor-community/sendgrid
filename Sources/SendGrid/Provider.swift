@@ -1,6 +1,6 @@
 import Vapor
 
-public final class Provider: Vapor.Provider {
+public final class SendGridProvider: Vapor.Provider {
     public static let repositoryName = "sendgrid-provider"
     
     public init(config: Config) throws { }
