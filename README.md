@@ -10,7 +10,7 @@ or leverage the full capabilities of SendGrid's V3 API.
 ## Setup
 Add the dependency to Package.swift:
 
-```JSON
+```swift
 .Package(url: "https://github.com/vapor-community/sendgrid-provider.git", majorVersion: 2, minor: 1)
 ```
 
@@ -22,16 +22,27 @@ Add a configuration file named `sendgrid.json` with the following format:
 }
 ```
 
-Set your Droplet to use SendGrid:
+Register the provider with the configuration system:
 
 ```swift
-import Vapor
-import SendGrid
+import Sendgrid
 
-let drop = try Droplet(
-  config: config,
-  mail: SendGrid(config: config)
-)
+extension Config {
+    /// Configure providers
+    private func setupProviders() throws {
+        ...
+        try addProvider(SendGridProvider.self)
+    }
+}
+```
+
+And finally, change the Droplet's mail implementation by editing `droplet.json`:
+
+```js
+{
+  "mail": "sendgrid",
+  // other configuration keys redacted for brevity
+}
 ```
 
 ## Sending simple emails
