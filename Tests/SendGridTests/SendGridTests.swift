@@ -15,16 +15,17 @@ class SendGridTests: XCTestCase {
 
     func testDroplet() throws {
         let config: Config = try [
+            "droplet": [
+                "mail": "sendgrid"
+            ],
             "sendgrid": [
                 "apiKey": apiKey
             ],
         ].makeNode(in: nil).converted()
-        let drop = try Droplet(
-          config: config,
-          mail: SendGrid(config: config)
-        )
+        try config.addProvider(SendGridProvider.self)
+        let drop = try Droplet(config)
         guard let _ = drop.mail as? SendGrid else {
-            XCTFail()
+            XCTFail("drop.mail is \(drop.mail)")
             return
         }
     }
