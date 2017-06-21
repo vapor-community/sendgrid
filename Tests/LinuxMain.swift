@@ -1,10 +1,10 @@
 #if os(Linux)
 
 import XCTest
-@testable import SendGridTests
+@testable import SendGridProviderTests
 
 XCTMain([
-    testCase(SendGridTests.allTests),
+    testCase(SendGridProviderTests.allTests),
 ])
 
 #endif
