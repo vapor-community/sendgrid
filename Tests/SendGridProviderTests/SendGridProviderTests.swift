@@ -1,11 +1,11 @@
 import XCTest
-import SendGrid
+import SendGridProvider
 import SMTP
 @testable import Vapor
 
 // Test inbox: https://www.mailinator.com/inbox2.jsp?public_to=vapor-sendgrid
 
-class SendGridTests: XCTestCase {
+class SendGridProviderTests: XCTestCase {
     static let allTests = [
         ("testDroplet", testDroplet),
         ("testSend", testSend),
@@ -22,7 +22,7 @@ class SendGridTests: XCTestCase {
                 "apiKey": apiKey
             ],
         ].makeNode(in: nil).converted()
-        try config.addProvider(SendGridProvider.self)
+        try config.addProvider(Provider.self)
         let drop = try Droplet(config)
         guard let _ = drop.mail as? SendGrid else {
             XCTFail("drop.mail is \(drop.mail)")

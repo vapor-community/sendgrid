@@ -1,7 +1,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "SendGrid",
+    name: "SendGridProvider",
     dependencies: [
         .Package(url: "https://github.com/vapor/vapor.git", majorVersion: 2),
     ]

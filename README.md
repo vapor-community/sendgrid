@@ -25,13 +25,13 @@ Add a configuration file named `sendgrid.json` with the following format:
 Register the provider with the configuration system:
 
 ```swift
-import Sendgrid
+import SendGridProvider
 
 extension Config {
     /// Configure providers
     private func setupProviders() throws {
         ...
-        try addProvider(SendGridProvider.self)
+        try addProvider(SendGridProvider.Provider.self)
     }
 }
 ```
