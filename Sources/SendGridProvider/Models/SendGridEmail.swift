@@ -56,27 +56,27 @@ public final class SendGridEmail {
     /*
         Date to send the email, or `nil` if email to be sent immediately
     */
-    public let sendAt: Date? = nil
+    public var sendAt: Date? = nil
 
     /*
         Include this email in a named batch
     */
-    public let batchId: String? = nil
+    public var batchId: String? = nil
 
     /*
         Determines how to handle unsubscribe links
     */
-    public let unsubscribeHandling: UnsubscribeHandling = .default
+    public var unsubscribeHandling: UnsubscribeHandling = .default
 
     /*
         IP pool to send from
     */
-    public let ipPoolName: String? = nil
+    public var ipPoolName: String? = nil
 
     /*
         Bypass unsubscriptions and suppressions - use only in emergency
     */
-    public let bypassListManagement: Bool = false
+    public var bypassListManagement: Bool = false
 
     /*
         Footer to add to email in variety of content types
@@ -121,7 +121,7 @@ public final class SendGridEmail {
     /*
         Email body content. Can only be empty if `templateId` is set
     */
-    public var content: [EmailBody] = []
+    public let content: [EmailBody]
 
     private init(from: EmailAddressRepresentable, subject: String?, templateId: String?, body: EmailBodyRepresentable?) {
         personalizations = []
@@ -130,6 +130,8 @@ public final class SendGridEmail {
         self.templateId = templateId
         if let body = body {
             self.content = [body.emailBody]
+        } else {
+            self.content = []
         }
     }
 
