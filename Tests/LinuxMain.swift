@@ -6,6 +6,7 @@ import XCTest
 
 extension SendGridTests {
 static var allTests = [
+  ("testNothing", testNothing),
 ]
 }
 

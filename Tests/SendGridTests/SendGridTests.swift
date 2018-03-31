@@ -5,4 +5,13 @@ import XCTest
 
 class SendGridTests: XCTestCase {
     
+    /**
+     Only way we can test if our request is valid is to use an actual APi key.
+     Maybe we'll use the testwithvapor@gmail account for these tests if it becomes
+     a recurring theme we need api keys to test providers.
+     */
+    
+    func testNothing() {
+        XCTAssertTrue(true)
+    }
 }
