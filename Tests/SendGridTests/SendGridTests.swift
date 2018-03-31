@@ -3,6 +3,6 @@ import XCTest
 @testable import Vapor
 // Test inbox: https://www.mailinator.com/inbox2.jsp?public_to=vapor-sendgrid
 
-class SendGridProviderTests: XCTestCase {
+class SendGridTests: XCTestCase {
     
 }

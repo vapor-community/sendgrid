@@ -1,10 +1,15 @@
-#if os(Linux)
+// Generated using Sourcery 0.7.2 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
 
 import XCTest
-@testable import SendGridProviderTests
+@testable import SendGridTests
+
+extension SendGridTests {
+static var allTests = [
+]
+}
+
 
 XCTMain([
-    testCase(SendGridProviderTests.allTests),
+  testCase(SendGridTests.allTests),
 ])
-
-#endif
