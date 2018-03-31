@@ -1,10 +1,17 @@
-dependencies:
-  override:
-    - eval "$(curl -sL https://apt.vapor.sh)"
-    - sudo apt-get install vapor
-    - sudo chmod -R a+rx /usr/
-test:
-  override:
-    - swift build
-    - swift build -c release
-    - swift test
+version: 2
+
+jobs:
+  linux:
+    docker:
+      - image: codevapor/swift:4.1
+    steps:
+      - checkout
+      - run: swift build
+      - run: swift test
+      - run: swift build -c release
+
+workflows:
+  version: 2
+  tests:
+    jobs:
+      - linux
