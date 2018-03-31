@@ -10,11 +10,7 @@ public struct SendGridConfig: Service {
 public final class SendGridProvider: Provider {
     public static let repositoryName = "sendgrid-provider"
     
-    let apiKey: String
-    
-    public init(apiKey: String){
-        self.apiKey = apiKey
-    }
+    public init(){}
 
     public func boot(_ config: Config) throws {}
     
