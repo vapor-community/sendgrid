@@ -9,8 +9,14 @@ import Vapor
 
 public struct EmailAddress: Content {
     /// format: email
-    var email: String?
+    public var email: String?
     
     /// The name of the person to whom you are sending an email.
-    var name: String?
+    public var name: String?
+    
+    public init(email: String? = nil,
+                name: String? = nil) {
+        self.email = email
+        self.name = name
+    }
 }

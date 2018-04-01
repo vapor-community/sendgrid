@@ -26,6 +26,24 @@ public struct Personalization: Content {
     /// A unix timestamp allowing you to specify when you want your email to be delivered. Scheduling more than 72 hours in advance is forbidden.
     public var sendAt: Date?
     
+    public init(to: [EmailAddress]? = nil,
+                cc: [EmailAddress]? = nil,
+                bcc: [EmailAddress]? = nil,
+                subject: String? = nil,
+                headers: [String: String]? = nil,
+                substitutions: [String: String]? = nil,
+                customArgs: [String: String]? = nil,
+                sendAt: Date? = nil) {
+        self.to = to
+        self.cc = cc
+        self.bcc = bcc
+        self.subject = subject
+        self.headers = headers
+        self.substitutions = substitutions
+        self.customArgs = customArgs
+        self.sendAt = sendAt
+    }
+    
     public enum CodingKeys: CodingKey, String {
         case to
         case cc
