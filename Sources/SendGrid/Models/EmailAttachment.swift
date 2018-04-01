@@ -24,6 +24,18 @@ public struct EmailAttachment: Content {
     /// The content id for the attachment. This is used when the disposition is set to “inline” and the attachment is an image, allowing the file to be displayed within the body of your email.
     public var contentId: String?
     
+    public init(content: String? = nil,
+                type: String? = nil,
+                filename: String? = nil,
+                disposition: String? = nil,
+                contentId: String? = nil) {
+        self.content = content
+        self.type = type
+        self.filename = filename
+        self.disposition = disposition
+        self.contentId = contentId
+    }
+    
     public enum CodingKeys: CodingKey, String {
         case content
         case type

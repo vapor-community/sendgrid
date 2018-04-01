@@ -51,6 +51,42 @@ public struct SendGridEmail: Content {
     /// Settings to determine how you would like to track the metrics of how your recipients interact with your email.
     public var trackingSettings: TrackingSettings?
     
+    public init(personalizations: [Personalization]? = nil,
+                from: EmailAddress? = nil,
+                replyTo: EmailAddress? = nil,
+                subject: String? = nil,
+                content: [String: String]? = nil,
+                attachments: [EmailAttachment]? = nil,
+                templateId: String? = nil,
+                sections: [String: String]? = nil,
+                headers: [String: String]? = nil,
+                categories: [String]? = nil,
+                customArgs: [String: String]? = nil,
+                sendAt: Date? = nil,
+                batchId: String? = nil,
+                asm: AdvancedSuppressionManager? = nil,
+                ipPoolName: String? = nil,
+                mailSettings: MailSettings? = nil,
+                trackingSettings: TrackingSettings? = nil) {
+        self.personalizations = personalizations
+        self.from = from
+        self.replyTo = replyTo
+        self.subject = subject
+        self.content = content
+        self.attachments = attachments
+        self.templateId = templateId
+        self.sections = sections
+        self.headers = headers
+        self.categories = categories
+        self.customArgs = customArgs
+        self.sendAt = sendAt
+        self.batchId = batchId
+        self.asm = asm
+        self.ipPoolName = ipPoolName
+        self.mailSettings = mailSettings
+        self.trackingSettings = trackingSettings
+    }
+    
     public enum CodingKeys: CodingKey, String {
         case personalizations
         case from

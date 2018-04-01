@@ -50,6 +50,6 @@ do {
     try sendgridClient.send(...)
 }
 catch let error as SendGridError {
-    print(error.localizedDescription)
+    print(error)
 }
 ~~~~

@@ -23,6 +23,18 @@ public struct MailSettings: Content {
     /// This allows you to test the content of your email for spam.
     public var spamCheck: SpamCheck?
     
+    public init(bcc: BCC? = nil,
+                bypassListManagement: BypassListManagement? = nil,
+                footer: Footer? = nil,
+                sandboxMode: SandboxMode? = nil,
+                spamCheck: SpamCheck? = nil) {
+        self.bcc = bcc
+        self.bypassListManagement = bypassListManagement
+        self.footer = footer
+        self.sandboxMode = sandboxMode
+        self.spamCheck = spamCheck
+    }
+    
     public enum CodingKeys: CodingKey, String {
         case bcc
         case bypassListManagement = "bypass_list_management"
@@ -36,11 +48,21 @@ public struct BCC: Content {
     /// Indicates if this setting is enabled.
     public var enable: Bool?
     public var email: String?
+    
+    public init(enable: Bool? = nil,
+                email: String? = nil) {
+        self.enable = enable
+        self.email = email
+    }
 }
 
 public struct BypassListManagement: Content {
     /// Indicates if this setting is enabled.
     public var enable: Bool?
+    
+    public init(enable: Bool? = nil) {
+        self.enable = enable
+    }
 }
 
 public struct Footer: Content {
@@ -52,11 +74,23 @@ public struct Footer: Content {
     
     /// The HTML content of your footer.
     public var html: String?
+    
+    public init(enable: Bool? = nil,
+                text: String? = nil,
+                html: String? = nil) {
+        self.enable = enable
+        self.text = text
+        self.html = html
+    }
 }
 
 public struct SandboxMode: Content {
     /// Indicates if this setting is enabled.
     public var enable: Bool?
+    
+    public init(enable: Bool? = nil) {
+        self.enable = enable
+    }
 }
 
 public struct SpamCheck: Content {
@@ -68,6 +102,14 @@ public struct SpamCheck: Content {
     
     /// An Inbound Parse URL that you would like a copy of your email along with the spam report to be sent to.
     public var postToUrl: String?
+    
+    public init(enable: Bool? = nil,
+                threshold: Int? = nil,
+                postToUrl: String? = nil) {
+        self.enable = enable
+        self.threshold = threshold
+        self.postToUrl = postToUrl
+    }
     
     public enum CodingKeys: CodingKey, String {
         case enable

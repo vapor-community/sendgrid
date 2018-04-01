@@ -20,6 +20,16 @@ public struct TrackingSettings: Content {
     /// Allows you to enable tracking provided by Google Analytics.
     public var ganalytics: GoogleAnalytics?
     
+    public init(clickTracking: ClickTracking? = nil,
+                openTracking: OpenTracking? = nil,
+                subscriptionTracking: SubscriptionTracking? = nil,
+                ganalytics: GoogleAnalytics? = nil) {
+        self.clickTracking = clickTracking
+        self.openTracking = openTracking
+        self.subscriptionTracking = subscriptionTracking
+        self.ganalytics = ganalytics
+    }
+    
     public enum CodingKeys: CodingKey, String {
         case clickTracking = "click_tracking"
         case openTracking = "open_tracking"
@@ -35,6 +45,12 @@ public struct ClickTracking: Content {
     /// Indicates if this setting should be included in the text/plain portion of your email.
     public var enableText: Bool?
     
+    public init(enable: Bool? = nil,
+                enableText: Bool? = nil) {
+        self.enable = enable
+        self.enableText = enableText
+    }
+    
     public enum CodingKeys: CodingKey, String {
         case enable
         case enableText = "enable_text"
@@ -47,6 +63,12 @@ public struct OpenTracking: Content {
     
     /// Allows you to specify a substitution tag that you can insert in the body of your email at a location that you desire. This tag will be replaced by the open tracking pixel.
     public var substitutionTag: String?
+    
+    public init(enable: Bool? = nil,
+                substitutionTag: String? = nil) {
+        self.enable = enable
+        self.substitutionTag = substitutionTag
+    }
     
     public enum CodingKeys: CodingKey, String {
         case enable
@@ -66,6 +88,14 @@ public struct SubscriptionTracking: Content {
     
     /// A tag that will be replaced with the unsubscribe URL. for example: [unsubscribe_url]. If this parameter is used, it will override both the text and html parameters. The URL of the link will be placed at the substitution tag’s location, with no additional formatting.
     public var substitutionTag: String?
+    
+    public init(enable: Bool? = nil,
+                text: String? = nil,
+                html: String? = nil) {
+        self.enable = enable
+        self.text = text
+        self.html = html
+    }
     
     public enum CodingKeys: CodingKey, String {
         case enable
@@ -93,6 +123,20 @@ public struct GoogleAnalytics: Content {
     
     /// The name of the campaign.
     public var utmCampaign: String?
+    
+    public init(enable: Bool? = nil,
+                utmSource: String? = nil,
+                utmMedium: String? = nil,
+                utmTerm: String? = nil,
+                utmContent: String? = nil,
+                utmCampaign: String? = nil) {
+        self.enable = enable
+        self.utmSource = utmSource
+        self.utmMedium = utmMedium
+        self.utmTerm = utmTerm
+        self.utmContent = utmContent
+        self.utmCampaign = utmCampaign
+    }
     
     public enum CodingKeys: CodingKey, String {
         case enable
