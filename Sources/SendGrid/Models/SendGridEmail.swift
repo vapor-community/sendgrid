@@ -13,7 +13,7 @@ public struct SendGridEmail: Content {
     public var subject: String?
     
     /// An array in which you may specify the content of your email.
-    public var content: [String: String]?
+    public var content: [[String: String]]?
 
     /// An array of objects in which you can specify any attachments you want to include.
     public var attachments: [EmailAttachment]?
@@ -55,7 +55,7 @@ public struct SendGridEmail: Content {
                 from: EmailAddress? = nil,
                 replyTo: EmailAddress? = nil,
                 subject: String? = nil,
-                content: [String: String]? = nil,
+                content: [[String: String]]? = nil,
                 attachments: [EmailAttachment]? = nil,
                 templateId: String? = nil,
                 sections: [String: String]? = nil,
