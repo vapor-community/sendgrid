@@ -11,7 +11,7 @@ or leverage the full capabilities of SendGrid's V3 API.
 Add the dependency to Package.swift:
 
 ~~~~swift
-.package(url: "https://github.com/vapor-community/sendgrid-provider.git", from: "3.0.0-rc")
+.package(url: "https://github.com/vapor-community/sendgrid-provider.git", from: "3.0.0")
 ~~~~
 
 Register the config and the provider.
