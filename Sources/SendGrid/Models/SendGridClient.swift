@@ -22,7 +22,9 @@ public final class SendGridClient: Service {
             
             encoder.dateEncodingStrategy = .secondsSince1970
             
-            let body = try encoder.encodeBody(from: email)
+            let data = try encoder.encode(email)
+            
+            let body = HTTPBody(data: data)
             
             let request = HTTPRequest(method: .POST, url: URL(string: apiEndpoint) ?? .root, headers: headers, body: body)
             
