@@ -1,6 +1,6 @@
 import Vapor
 public struct SendGridError: Error, Content {
-    var errors: [SendGridErrorResponse]?
+    public var errors: [SendGridErrorResponse]?
 }
 
 public struct SendGridErrorResponse: Content {
