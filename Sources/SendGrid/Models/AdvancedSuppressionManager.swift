@@ -13,7 +13,7 @@ public struct AdvancedSuppressionManager: Content {
         self.groupsToDisplay = groupsToDisplay
     }
     
-    public enum CodingKeys: CodingKey, String {
+    public enum CodingKeys: String, CodingKey {
         case groupId = "group_id"
         case groupsToDisplay = "groups_to_display"
     }

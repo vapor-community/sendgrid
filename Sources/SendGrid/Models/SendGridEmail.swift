@@ -87,7 +87,7 @@ public struct SendGridEmail: Content {
         self.trackingSettings = trackingSettings
     }
     
-    public enum CodingKeys: CodingKey, String {
+    public enum CodingKeys: String, CodingKey {
         case personalizations
         case from
         case replyTo = "reply_to"
