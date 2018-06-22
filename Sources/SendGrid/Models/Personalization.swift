@@ -44,7 +44,7 @@ public struct Personalization: Content {
         self.sendAt = sendAt
     }
     
-    public enum CodingKeys: CodingKey, String {
+    public enum CodingKeys: String, CodingKey {
         case to
         case cc
         case bcc

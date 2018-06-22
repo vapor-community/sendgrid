@@ -30,7 +30,7 @@ public struct TrackingSettings: Content {
         self.ganalytics = ganalytics
     }
     
-    public enum CodingKeys: CodingKey, String {
+    public enum CodingKeys: String, CodingKey {
         case clickTracking = "click_tracking"
         case openTracking = "open_tracking"
         case subscriptionTracking = "subscription_tracking"
@@ -51,7 +51,7 @@ public struct ClickTracking: Content {
         self.enableText = enableText
     }
     
-    public enum CodingKeys: CodingKey, String {
+    public enum CodingKeys: String, CodingKey {
         case enable
         case enableText = "enable_text"
     }
@@ -70,7 +70,7 @@ public struct OpenTracking: Content {
         self.substitutionTag = substitutionTag
     }
     
-    public enum CodingKeys: CodingKey, String {
+    public enum CodingKeys: String, CodingKey {
         case enable
         case substitutionTag = "substitution_tag"
     }
@@ -97,7 +97,7 @@ public struct SubscriptionTracking: Content {
         self.html = html
     }
     
-    public enum CodingKeys: CodingKey, String {
+    public enum CodingKeys: String, CodingKey {
         case enable
         case text
         case html
@@ -138,7 +138,7 @@ public struct GoogleAnalytics: Content {
         self.utmCampaign = utmCampaign
     }
     
-    public enum CodingKeys: CodingKey, String {
+    public enum CodingKeys: String, CodingKey {
         case enable
         case utmSource = "utm_source"
         case utmMedium = "utm_medium"

@@ -35,7 +35,7 @@ public struct MailSettings: Content {
         self.spamCheck = spamCheck
     }
     
-    public enum CodingKeys: CodingKey, String {
+    public enum CodingKeys: String, CodingKey {
         case bcc
         case bypassListManagement = "bypass_list_management"
         case footer
@@ -111,7 +111,7 @@ public struct SpamCheck: Content {
         self.postToUrl = postToUrl
     }
     
-    public enum CodingKeys: CodingKey, String {
+    public enum CodingKeys: String, CodingKey {
         case enable
         case threshold
         case postToUrl = "post_to_url"

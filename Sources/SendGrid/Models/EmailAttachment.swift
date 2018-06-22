@@ -36,7 +36,7 @@ public struct EmailAttachment: Content {
         self.contentId = contentId
     }
     
-    public enum CodingKeys: CodingKey, String {
+    public enum CodingKeys: String, CodingKey {
         case content
         case type
         case filename
