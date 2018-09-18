@@ -20,6 +20,9 @@ public struct Personalization: Content {
     /// A collection of key/value pairs following the pattern "substitution_tag":"value to substitute".
     public var substitutions: [String: String]?
     
+    /// A collection of key/value pairs following the pattern "key":"value" to substitute handlebar template data
+    public var dynamicTemplateData: [String: String]?
+    
     /// Values that are specific to this personalization that will be carried along with the email and its activity data.
     public var customArgs: [String: String]?
     
@@ -32,6 +35,7 @@ public struct Personalization: Content {
                 subject: String? = nil,
                 headers: [String: String]? = nil,
                 substitutions: [String: String]? = nil,
+                dynamicTemplateData: [String: String]? = nil,
                 customArgs: [String: String]? = nil,
                 sendAt: Date? = nil) {
         self.to = to
@@ -40,6 +44,7 @@ public struct Personalization: Content {
         self.subject = subject
         self.headers = headers
         self.substitutions = substitutions
+        self.dynamicTemplateData = dynamicTemplateData
         self.customArgs = customArgs
         self.sendAt = sendAt
     }
@@ -52,6 +57,7 @@ public struct Personalization: Content {
         case headers
         case substitutions
         case customArgs = "custom_args"
+        case dynamicTemplateData = "dynamic_template_data"
         case sendAt = "send_at"
     }
 }
