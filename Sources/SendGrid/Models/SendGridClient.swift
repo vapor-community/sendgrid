@@ -22,7 +22,7 @@ public final class SendGridClient {
         self.apiKey = apiKey
     }
     
-    public func send(_ emails: [SendGridEmail], on request: Request) throws -> EventLoopFuture<[SendGridStatus]> {
+    public func send(_ emails: [SendGridEmail], on request: Request) -> EventLoopFuture<[SendGridStatus]> {
         
         return emails.map { (email) in
             
