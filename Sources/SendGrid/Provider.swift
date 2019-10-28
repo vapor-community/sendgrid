@@ -1,6 +1,6 @@
 import Vapor
 
-public struct SendGridConfig: Service {
+public struct SendGridConfig {
     let apiKey: String
     public init(apiKey: String) {
         self.apiKey = apiKey
@@ -8,21 +8,15 @@ public struct SendGridConfig: Service {
 }
 
 public final class SendGridProvider: Provider {
+    public func register(_ app: Application) {
+        app.register(SendGridClient.self) { app in
+            let config = app.make(SendGridConfig.self)
+            return .init(client: app.make(), apiKey: config.apiKey)
+        }
+    }
+    
     public static let repositoryName = "sendgrid-provider"
     
     public init(){}
 
-    public func boot(_ config: Config) throws {}
-    
-    public func didBoot(_ worker: Container) throws -> EventLoopFuture<Void> {
-        return .done(on: worker)
-    }
-
-    public func register(_ services: inout Services) throws {
-        services.register { (container) -> SendGridClient in
-            let httpClient = try container.make(Client.self)
-            let config = try container.make(SendGridConfig.self)
-            return SendGridClient(client: httpClient, apiKey: config.apiKey)
-        }
-    }
 }
