@@ -52,6 +52,6 @@ public final class SendGridClient {
                     }
                 }
             }
-        }.flatten(on: request.eventLoop)
+        }.flatten(on: request.eventLoop )
     }
 }
