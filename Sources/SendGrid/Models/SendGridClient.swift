@@ -1,9 +1,9 @@
 import Vapor
 
 public final class SendGridStatus {
-    var success: Bool
-    var email: SendGridEmail
-    var error: SendGridError?
+    public var success: Bool
+    public var email: SendGridEmail
+    public var error: SendGridError?
     
     init(_ success: Bool, _ email: SendGridEmail, _ error: SendGridError? = nil) {
         self.success = success
