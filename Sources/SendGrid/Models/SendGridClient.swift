@@ -36,8 +36,9 @@ public final class SendGridClient {
             let sgRequest = httpClient.post(apiEndpoint, headers: headers, beforeSend: { req in
                 try req.content.encode(email, using: encoder)
             })
-            
+            print("sending out a request now")
             return sgRequest.map { response in
+                print("got an answer: ", response)
                 switch response.status {
                 case .ok, .accepted: return SendGridStatus(true, email)
                 default:
