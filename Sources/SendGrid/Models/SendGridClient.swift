@@ -33,11 +33,11 @@ public final class SendGridClient {
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = .secondsSince1970
 
-            let request = httpClient.post(apiEndpoint, headers: headers, beforeSend: { req in
+            let sgRequest = httpClient.post(apiEndpoint, headers: headers, beforeSend: { req in
                 try req.content.encode(email, using: encoder)
             })
             
-            return request.map { response in
+            return sgRequest.map { response in
                 switch response.status {
                 case .ok, .accepted: return SendGridStatus(true, email)
                 default:
