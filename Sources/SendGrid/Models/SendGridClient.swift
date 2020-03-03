@@ -48,6 +48,9 @@ public final class SendGridClient {
                         return SendGridStatus(false, email, error)
                     }
                     catch {
+                        let b = (response.body!)
+                        let bytes:Data = b.getData(at: 0, length: b.readableBytes)!
+                        print("Sendgrid Error: ", String(data: bytes, encoding: .utf8)!)
                         return SendGridStatus(false, email)
                     }
                 }
