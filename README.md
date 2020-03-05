@@ -4,52 +4,51 @@
 ![Vapor](http://img.shields.io/badge/vapor-4.0-brightgreen.svg)
 [![CircleCI](https://circleci.com/gh/vapor-community/sendgrid-provider.svg?style=shield)](https://circleci.com/gh/vapor-community/sendgrid-provider)
 
-Adds a mail backend for SendGrid to the Vapor web framework. Send simple emails,
+Adds a mail backend for SendGrid to the [Vapor web framework](https://vapor.codes/). Send simple emails,
 or leverage the full capabilities of SendGrid's V3 API.
 
 ## Setup
-Add the dependency to Package.swift:
+
+Add the dependency to your `Package.swift`:
 
 ~~~~swift
 .package(url: "https://github.com/vapor-community/sendgrid-provider.git", from: "3.0.0")
+
+// …
+
+.product(name: "SendGrid", package: "sendgrid-provider")
 ~~~~
 
-Register the config and the provider.
+Configure your SendGrid API key:
+
 ~~~~swift
-let config = SendGridConfig(apiKey: "SG.something")
-
-services.register(config)
-
-try services.register(SendGridProvider())
-
-app = try Application(services: services)
-
-sendGridClient = try app.make(SendGridClient.self)
+application.sendgridClient.configuration.apiKey = "SG.something"
 ~~~~
+
+The client is now ready to use!
 
 ## Using the API
 
-You can use all of the available parameters here to build your `SendGridEmail`
-Usage in a route closure would be as followed:
+Instantiate an instance of `SendGridEmail`, then use the client to send it:
 
 ~~~~swift
 import SendGrid
 
 let email = SendGridEmail(…)
-let sendGridClient = try req.make(SendGridClient.self)
 
-try sendGridClient.send([email], on: req.eventLoop)
+try application.sendgridClient.send([email], on: req.eventLoop)
 ~~~~
 
 ## Error handling
-If the request to the API failed for any reason a `SendGridError` is `thrown` and has an `errors` property that contains an array of errors returned by the API.
-Simply ensure you catch errors thrown like any other throwing function
+
+If a request to the API failed for any reason, a `SendGridError` is thrown and has an `errors` property that contains an array of errors returned by SendGrid's API.
+
+Ensure that you catch errors thrown, just as you would with any other throwing function:
 
 ~~~~swift
 do {
-    try sendgridClient.send(...)
-}
-catch let error as SendGridError {
+    try application.sendgridClient.send(...)
+} catch let error as SendGridError {
     print(error)
 }
 ~~~~
