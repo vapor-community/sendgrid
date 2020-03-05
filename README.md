@@ -4,8 +4,7 @@
 ![Vapor](http://img.shields.io/badge/vapor-4.0-brightgreen.svg)
 [![CircleCI](https://circleci.com/gh/vapor-community/sendgrid-provider.svg?style=shield)](https://circleci.com/gh/vapor-community/sendgrid-provider)
 
-Adds a mail backend for SendGrid to the [Vapor web framework](https://vapor.codes/). Send simple emails,
-or leverage the full capabilities of SendGrid's V3 API.
+Adds a mail backend for [SendGrid](https://sendgrid.com/) to the [Vapor web framework](https://vapor.codes/). Send simple emails, or leverage the full capabilities of [SendGrid's V3 API](https://sendgrid.com/docs/api-reference/).
 
 ## Setup
 
