@@ -3,12 +3,12 @@ version: 2
 jobs:
   linux:
     docker:
-      - image: codevapor/swift:4.1
+      - image: codevapor/swift:5.2
     steps:
       - checkout
-      - run: swift build
-      - run: swift test
-      - run: swift build -c release
+      - run: swift build --enable-test-discovery
+      - run: swift test --enable-test-discovery
+      - run: swift build -c release --enable-test-discovery
 
 workflows:
   version: 2
