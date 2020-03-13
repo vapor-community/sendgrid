@@ -27,7 +27,8 @@ public final class SendGridClient {
             
             return request.flatMap { response in
                 switch response.status {
-                case .ok, .accepted: return eventLoop.makeSucceededFuture(())
+                case .ok, .accepted:
+                    return eventLoop.makeSucceededFuture(())
                 default:
                     let decoder = JSONDecoder()
                     decoder.dateDecodingStrategy = .secondsSince1970
