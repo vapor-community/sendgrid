@@ -3,6 +3,9 @@ import PackageDescription
 
 let package = Package(
     name: "SendGrid",
+    platforms: [
+        .macOS(.v10_15)
+    ],
     products: [
         .library(name: "SendGrid", targets: ["SendGrid"])
     ],
