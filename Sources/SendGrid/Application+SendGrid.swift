@@ -5,11 +5,9 @@ extension Application {
     public struct Sendgrid {
         private final class Storage {
             let apiKey: String
-            let sendgridClient: SendGridClient
             
-            init(httpClient: HTTPClient, apiKey: String) {
+            init(apiKey: String) {
                 self.apiKey = apiKey
-                self.sendgridClient = SendGridClient(httpClient: httpClient, apiKey: apiKey)
             }
         }
 
@@ -24,20 +22,19 @@ extension Application {
             return self.application.storage[Key.self]!
         }
         
-        private func initialize() {
+        public func initialize() {
             guard let apiKey = Environment.process.SENDGRID_API_KEY else {
                 fatalError("No sendgrid API key provided")
             }
             
-            self.application.storage[Key.self] = .init(httpClient: self.application.client.http, apiKey: apiKey)
+            self.application.storage[Key.self] = .init(apiKey: apiKey)
         }
 
         fileprivate let application: Application
 
-
-        public var client: SendGridClient { self.storage.sendgridClient }
-        
+        public var client: SendGridClient { .init(httpClient: self.application.client.http, apiKey: self.storage.apiKey) }
     }
 
     public var sendgrid: Sendgrid { .init(application: self) }
 }
+
