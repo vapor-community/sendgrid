@@ -1,8 +1,13 @@
 # SendGrid Provider for Vapor
 
-![Swift](http://img.shields.io/badge/swift-4.1-brightgreen.svg)
-![Vapor](http://img.shields.io/badge/vapor-3.0-brightgreen.svg)
-[![CircleCI](https://circleci.com/gh/vapor-community/sendgrid-provider.svg?style=shield)](https://circleci.com/gh/vapor-community/sendgrid-provider)
+<p align="center">
+    <a href="https://github.com/vapor-community/sendgrid/actions">
+        <img src="https://github.com/vapor-community/sendgrid/workflows/test/badge.svg" alt="Continuous Integration">
+    </a>
+    <a href="https://swift.org">
+        <img src="http://img.shields.io/badge/swift-5.2-brightgreen.svg" alt="Swift 5.2">
+    </a>
+</p>
 
 Adds a mail backend for SendGrid to the Vapor web framework. Send simple emails,
 or leverage the full capabilities of SendGrid's V3 API.
@@ -11,20 +16,24 @@ or leverage the full capabilities of SendGrid's V3 API.
 Add the dependency to Package.swift:
 
 ~~~~swift
-.package(url: "https://github.com/vapor-community/sendgrid-provider.git", from: "3.0.0")
+.package(url: "https://github.com/vapor-community/sendgrid.git", from: "4.0.0")
 ~~~~
 
-Register the config and the provider.
+Make sure `SENDGRID_API_KEY` is set in your environment. This can be set in the
+Xcode scheme, or specified in your `docker-compose.yml`, or even provided as
+part of a `swift run` command.
+
+Optionally, explicitly initialize the provider (this is strongly recommended, as
+otherwise a missing API key will cause a fatal error some time later in your
+application):
+
 ~~~~swift
-let config = SendGridConfig(apiKey: "SG.something")
+app.sendgrid.initialize()
+~~~~
 
-services.register(config)
-
-try services.register(SendGridProvider())
-
-app = try Application(services: services)
-
-sendGridClient = try app.make(SendGridClient.self)
+Now you can access the client at any time:
+~~~~swift
+app.sendgrid.client
 ~~~~
 
 ## Using the API
@@ -36,20 +45,20 @@ Usage in a route closure would be as followed:
 import SendGrid
 
 let email = SendGridEmail(…)
-let sendGridClient = try req.make(SendGridClient.self)
 
-try sendGridClient.send([email], on: req.eventLoop)
+return req.application.sendgrid.client.send([email], on: req.eventLoop)
 ~~~~
 
 ## Error handling
-If the request to the API failed for any reason a `SendGridError` is `thrown` and has an `errors` property that contains an array of errors returned by the API.
-Simply ensure you catch errors thrown like any other throwing function
+If the request to the API failed for any reason a `SendGridError` is the result
+of the future, and has an `errors` property that contains an array of errors
+returned by the API:
 
 ~~~~swift
-do {
-    try sendgridClient.send(...)
-}
-catch let error as SendGridError {
-    print(error)
+return req.application.sendgrid.client.send([email], on: req.eventLoop).flatMapError { error in
+    if let sendgridError = error as? SendGridError {
+        req.logger.error("\(error)")
+    }
+    // ...
 }
 ~~~~
