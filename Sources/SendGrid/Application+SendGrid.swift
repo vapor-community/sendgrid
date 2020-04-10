@@ -32,7 +32,9 @@ extension Application {
 
         fileprivate let application: Application
 
-        public var client: SendGridClient { .init(httpClient: self.application.client.http, apiKey: self.storage.apiKey) }
+        public var client: SendGridClient {
+            .init(httpClient: self.application.http.client.shared, apiKey: self.storage.apiKey)
+        }
     }
 
     public var sendgrid: Sendgrid { .init(application: self) }
