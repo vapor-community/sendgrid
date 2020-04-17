@@ -11,12 +11,14 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "1.0.0"),
+        .package(url: "https://github.com/vapor-community/sendgrid-kit.git", .branch("vapor-email")),
+        .package(url: "https://github.com/vapor/email.git", .branch("master"))
     ],
     targets: [
         .target(name: "SendGrid", dependencies: [
             .product(name: "Vapor", package: "vapor"),
             .product(name: "SendGridKit", package: "sendgrid-kit"),
+            .product(name: "Email", package: "email"),
         ]),
         .testTarget(name: "SendGridTests", dependencies: ["SendGrid"])
     ]
