@@ -11,7 +11,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "1.0.0"),
+        .package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "1.0.1"),
     ],
     targets: [
         .target(name: "SendGrid", dependencies: [
