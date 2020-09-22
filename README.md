@@ -33,6 +33,8 @@ part of a `swift run` command.
 To set it in the Xcode Scheme you can click in edit scheme and it shows a list of
 Environment Variables where you can create a new entry for `SENDGRID_API_KEY`.
 
+![Xcode Scheme SendGrid API Key Environment Variables](XcodeSchemeSendGrid.png?raw=true "Xcode Scheme SendGrid API Key Environment Variables")
+
 ## Initialize
 
 Optionally, explicitly initialize the provider (this is strongly recommended, as
