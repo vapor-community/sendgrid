@@ -46,19 +46,17 @@ import SendGrid
 
 let email = SendGridEmail(…)
 
-return req.application.sendgrid.client.send([email], on: req.eventLoop)
+try await req.application.sendgrid.client.send(email)
 ~~~~
 
 ## Error handling
-If the request to the API failed for any reason a `SendGridError` is the result
-of the future, and has an `errors` property that contains an array of errors
-returned by the API:
+
+If the request to the API failed for any reason a `SendGridError` is thrown and has an `errors` property that contains an array of errors returned by the API:
 
 ~~~~swift
-return req.application.sendgrid.client.send([email], on: req.eventLoop).flatMapError { error in
-    if let sendgridError = error as? SendGridError {
-        req.logger.error("\(error)")
-    }
-    // ...
+do {
+		try await req.application.sendgrid.client.send(email)
+} catch let error as SendGridError {
+		req.logger.error("\(error)")
 }
 ~~~~
