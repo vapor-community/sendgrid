@@ -55,8 +55,8 @@ If the request to the API failed for any reason a `SendGridError` is thrown and 
 
 ~~~~swift
 do {
-		try await req.application.sendgrid.client.send(email)
+    try await req.application.sendgrid.client.send(email)
 } catch let error as SendGridError {
-		req.logger.error("\(error)")
+    req.logger.error("\(error)")
 }
 ~~~~
