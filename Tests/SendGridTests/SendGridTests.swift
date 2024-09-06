@@ -1,17 +1,38 @@
-import XCTest
-@testable import SendGrid
-@testable import Vapor
-// Test inbox: https://www.mailinator.com/inbox2.jsp?public_to=vapor-sendgrid
+import XCTVapor
+import SendGrid
 
-class SendGridTests: XCTestCase {
-    
-    /**
-     Only way we can test if our request is valid is to use an actual APi key.
-     Maybe we'll use the testwithvapor@gmail account for these tests if it becomes
-     a recurring theme we need api keys to test providers.
-     */
-    
-    func testNothing() {
-        XCTAssertTrue(true)
+class SendGridTests: XCTestCase {    
+    var app: Application!
+    // TODO: Replace from addresses and to addresses
+    let email = SendGridEmail(
+        personalizations: [Personalization(to: ["TO-ADDRESS"])],
+        from: "FROM-ADDRESS",
+        subject: "Test Email",
+        content: ["This email was sent using SendGridKit!"]
+    )
+
+    override func setUp() async throws {
+        self.app = try await Application.make(.testing)
+    }
+
+    override func tearDown() async throws {
+        try await app.asyncShutdown()
+    }
+
+    func testApplication() async throws {
+        do {
+            try await app.sendgrid.client.send(email: email)
+        } catch {}
+    }
+
+    func testRequest() async throws {
+        app.get("test") { req async throws -> Response in
+            try await req.sendgrid.client.send(email: self.email)
+            return Response(status: .ok)
+        }
+
+        try await app.test(.GET, "test") { res async throws in
+            XCTAssertEqual(res.status, .internalServerError)
+        }
     }
 }
