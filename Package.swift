@@ -11,8 +11,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(url: "https://github.com/fpseverino/sendgrid-kit.git", branch: "update"),
-        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"),
+        .package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "2.0.0"),
     ],
     targets: [
         .target(
