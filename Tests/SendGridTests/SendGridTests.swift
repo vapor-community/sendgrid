@@ -3,13 +3,6 @@ import SendGrid
 
 class SendGridTests: XCTestCase {    
     var app: Application!
-    // TODO: Replace from addresses and to addresses
-    let email = SendGridEmail(
-        personalizations: [Personalization(to: ["TO-ADDRESS"])],
-        from: "FROM-ADDRESS",
-        subject: "Test Email",
-        content: ["This email was sent using SendGridKit!"]
-    )
 
     override func setUp() async throws {
         self.app = try await Application.make(.testing)
@@ -20,6 +13,14 @@ class SendGridTests: XCTestCase {
     }
 
     func testApplication() async throws {
+        // TODO: Replace from addresses and to addresses
+        let email = SendGridEmail(
+            personalizations: [Personalization(to: ["TO-ADDRESS"])],
+            from: "FROM-ADDRESS",
+            subject: "Test Email",
+            content: ["This email was sent using SendGridKit!"]
+        )
+
         do {
             try await app.sendgrid.client.send(email: email)
         } catch {}
@@ -27,7 +28,14 @@ class SendGridTests: XCTestCase {
 
     func testRequest() async throws {
         app.get("test") { req async throws -> Response in
-            try await req.sendgrid.client.send(email: self.email)
+            // TODO: Replace from addresses and to addresses
+            let email = SendGridEmail(
+                personalizations: [Personalization(to: ["TO-ADDRESS"])],
+                from: "FROM-ADDRESS",
+                subject: "Test Email",
+                content: ["This email was sent using SendGridKit!"]
+            )
+            try await req.sendgrid.client.send(email: email)
             return Response(status: .ok)
         }
 
