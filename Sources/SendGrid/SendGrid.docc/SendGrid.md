@@ -6,6 +6,10 @@
 
 Send simple emails, or leverage the full capabilities of SendGrid's V3 API.
 
+> Warning:  Make sure that the `SENDGRID_API_KEY` variable is set in your environment.
+This can be set in the Xcode scheme, or specified in your `docker-compose.yml`, or even provided as part of a `swift run` command.
+A missing API key will result in a fatal error.
+
 ### Using the API
 
 You can use all of the available parameters here to build your `SendGridEmail`.

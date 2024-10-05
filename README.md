@@ -38,9 +38,10 @@ and add it to your target's dependencies:
 
 ## Overview
 
-> [!NOTE]
+> [!WARNING]
 > Make sure that the `SENDGRID_API_KEY` variable is set in your environment.
 This can be set in the Xcode scheme, or specified in your `docker-compose.yml`, or even provided as part of a `swift run` command.
+A missing API key will result in a fatal error.
 
 ### Using the API
 

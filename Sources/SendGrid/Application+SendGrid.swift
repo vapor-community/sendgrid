@@ -3,11 +3,11 @@ import SendGridKit
 import Vapor
 
 extension Application {
-    public var sendgrid: Sendgrid {
+    public var sendgrid: SendGrid {
         .init(application: self)
     }
 
-    public struct Sendgrid: Sendable {
+    public struct SendGrid: Sendable {
         private final class Storage: Sendable {
             private struct SendableBox: Sendable {
                 var client: SendGridClient
