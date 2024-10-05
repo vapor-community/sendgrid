@@ -1,20 +1,20 @@
-import Vapor
-import SendGridKit
 import NIOConcurrencyHelpers
+import SendGridKit
+import Vapor
 
-public extension Application {
-    var sendgrid: Sendgrid {
+extension Application {
+    public var sendgrid: Sendgrid {
         .init(application: self)
     }
 
-    struct Sendgrid: Sendable {
+    public struct Sendgrid: Sendable {
         private final class Storage: Sendable {
             private struct SendableBox: Sendable {
                 var client: SendGridClient
             }
-            
+
             private let sendableBox: NIOLockedValueBox<SendableBox>
-            
+
             var client: SendGridClient {
                 get {
                     self.sendableBox.withLockedValue { box in
@@ -27,7 +27,7 @@ public extension Application {
                     }
                 }
             }
-            
+
             init(httpClient: HTTPClient, apiKey: String) {
                 let box = SendableBox(client: .init(httpClient: httpClient, apiKey: apiKey))
                 self.sendableBox = .init(box)

@@ -13,14 +13,14 @@
         <img src="https://img.shields.io/codecov/c/github/vapor-community/sendgrid?style=plastic&logo=codecov&label=codecov">
     </a>
     <a href="https://swift.org">
-        <img src="https://design.vapor.codes/images/swift510up.svg" alt="Swift 5.10+">
+        <img src="https://design.vapor.codes/images/swift60up.svg" alt="Swift 6.0+">
     </a>
 </div>
 <br>
 
-📧 SendGrid library for the Vapor web framework.
+📧 SendGrid library for the Vapor web framework, based on [SendGridKit](https://github.com/vapor-community/sendgrid-kit).
 
-Send simple emails, or leverage the full capabilities of SendGrid's V3 API.
+Send simple emails, or leverage the full capabilities of [SendGrid's V3 API](https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send).
 
 ### Getting Started
 
@@ -36,11 +36,11 @@ and add it to your target's dependencies:
 .product(name: "SendGrid", package: "sendgrid")
 ```
 
+## Overview
+
 > [!NOTE]
 > Make sure that the `SENDGRID_API_KEY` variable is set in your environment.
 This can be set in the Xcode scheme, or specified in your `docker-compose.yml`, or even provided as part of a `swift run` command.
-
-## Overview
 
 ### Using the API
 
@@ -65,6 +65,6 @@ Simply ensure you catch errors thrown like any other throwing function.
 do {
 	try await req.sendgrid.client.send(email)
 } catch let error as SendGridError {
-	req.logger.error("\(error)")
+	req.logger.error("\(error.errors)")
 }
 ```

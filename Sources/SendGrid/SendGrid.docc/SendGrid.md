@@ -1,6 +1,6 @@
 # ``SendGrid``
 
-📧 SendGrid library for the Vapor web framework.
+📧 SendGrid library for the Vapor web framework, based on SendGridKit.
 
 ## Overview
 
@@ -29,6 +29,6 @@ Simply ensure you catch errors thrown like any other throwing function.
 do {
 	try await req.sendgrid.client.send(email)
 } catch let error as SendGridError {
-	req.logger.error("\(error)")
+	req.logger.error("\(error.errors)")
 }
 ```

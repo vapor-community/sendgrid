@@ -1,17 +1,17 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.0
 import PackageDescription
 
 let package = Package(
     name: "sendgrid",
     platforms: [
-        .macOS(.v13)
+        .macOS(.v14)
     ],
     products: [
         .library(name: "SendGrid", targets: ["SendGrid"])
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "2.0.0"),
+        .package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "3.0.0-rc.1"),
     ],
     targets: [
         .target(
@@ -29,15 +29,12 @@ let package = Package(
                 .product(name: "XCTVapor", package: "vapor"),
             ],
             swiftSettings: swiftSettings
-        )
+        ),
     ]
 )
 
-var swiftSettings: [SwiftSetting] { [
-    .enableUpcomingFeature("ExistentialAny"),
-    .enableUpcomingFeature("ConciseMagicFile"),
-    .enableUpcomingFeature("ForwardTrailingClosures"),
-    .enableUpcomingFeature("DisableOutwardActorInference"),
-    .enableUpcomingFeature("StrictConcurrency"),
-    .enableExperimentalFeature("StrictConcurrency=complete"),
-] }
+var swiftSettings: [SwiftSetting] {
+    [
+        .enableUpcomingFeature("ExistentialAny")
+    ]
+}
