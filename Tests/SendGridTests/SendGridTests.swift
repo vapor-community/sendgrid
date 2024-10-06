@@ -56,7 +56,7 @@ struct SendGridTests {
             do {
                 try await app.sendgrid.client.send(email: email)
             } catch {}
-            
+
             // Try sending again to ensure the client is stored and reused
             // You'll see if it's reused in the code coverage report
             do {
