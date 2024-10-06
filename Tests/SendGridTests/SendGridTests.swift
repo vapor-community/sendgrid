@@ -15,8 +15,6 @@ struct SendGridTests {
 
             try await withKnownIssue {
                 try await app.sendgrid.client.send(email: email)
-                // Try again to ensure the client is reusable
-                try await app.sendgrid.client.send(email: email)
             } when: {
                 // TODO: Replace with `false` when you have a valid API key
                 true
@@ -42,6 +40,28 @@ struct SendGridTests {
                 // TODO: Replace with `.ok` when you have a valid API key
                 #expect(res.status == .internalServerError)
             }
+        }
+    }
+
+    @Test func storage() async throws {
+        try await withApp { app in
+            // TODO: Replace from addresses and to addresses
+            let email = SendGridEmail(
+                personalizations: [Personalization(to: ["TO-ADDRESS"])],
+                from: "FROM-ADDRESS",
+                subject: "Test Email",
+                content: ["This email was sent using SendGridKit!"]
+            )
+
+            do {
+                try await app.sendgrid.client.send(email: email)
+            } catch {}
+            
+            // Try sending again to ensure the client is stored and reused
+            // You'll see if it's reused in the code coverage report
+            do {
+                try await app.sendgrid.client.send(email: email)
+            } catch {}
         }
     }
 }
