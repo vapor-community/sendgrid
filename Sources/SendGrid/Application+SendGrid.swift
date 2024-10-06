@@ -1,13 +1,36 @@
-import Vapor
+import NIOConcurrencyHelpers
 import SendGridKit
+import Vapor
 
 extension Application {
-    public struct Sendgrid {
-        private final class Storage {
-            let apiKey: String
-            
-            init(apiKey: String) {
-                self.apiKey = apiKey
+    public var sendgrid: SendGrid {
+        .init(application: self)
+    }
+
+    public struct SendGrid: Sendable {
+        private final class Storage: Sendable {
+            private struct SendableBox: Sendable {
+                var client: SendGridClient
+            }
+
+            private let sendableBox: NIOLockedValueBox<SendableBox>
+
+            var client: SendGridClient {
+                get {
+                    self.sendableBox.withLockedValue { box in
+                        box.client
+                    }
+                }
+                set {
+                    self.sendableBox.withLockedValue { box in
+                        box.client = newValue
+                    }
+                }
+            }
+
+            init(httpClient: HTTPClient, apiKey: String) {
+                let box = SendableBox(client: .init(httpClient: httpClient, apiKey: apiKey))
+                self.sendableBox = .init(box)
             }
         }
 
@@ -15,28 +38,28 @@ extension Application {
             typealias Value = Storage
         }
 
-        private var storage: Storage {
-            if self.application.storage[Key.self] == nil {
-                self.initialize()
-            }
-            return self.application.storage[Key.self]!
-        }
-        
-        public func initialize() {
-            guard let apiKey = Environment.process.SENDGRID_API_KEY else {
-                fatalError("No sendgrid API key provided")
-            }
-            
-            self.application.storage[Key.self] = .init(apiKey: apiKey)
-        }
-
         fileprivate let application: Application
 
+        public init(application: Application) {
+            self.application = application
+        }
+
         public var client: SendGridClient {
-            .init(httpClient: self.application.http.client.shared, apiKey: self.storage.apiKey)
+            get { self.storage.client }
+            set { self.storage.client = newValue }
+        }
+
+        private var storage: Storage {
+            if let existing = self.application.storage[Key.self] {
+                return existing
+            } else {
+                guard let apiKey = Environment.process.SENDGRID_API_KEY else {
+                    fatalError("No SendGrid API key provided")
+                }
+                let new = Storage(httpClient: self.application.http.client.shared, apiKey: apiKey)
+                self.application.storage[Key.self] = new
+                return new
+            }
         }
     }
-
-    public var sendgrid: Sendgrid { .init(application: self) }
 }
-
