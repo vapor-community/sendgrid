@@ -15,6 +15,8 @@ struct SendGridTests {
 
             try await withKnownIssue {
                 try await app.sendgrid.client.send(email: email)
+                // Try again to ensure the client is reusable
+                try await app.sendgrid.client.send(email: email)
             } when: {
                 // TODO: Replace with `false` when you have a valid API key
                 true
