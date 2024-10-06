@@ -27,7 +27,7 @@ Send simple emails, or leverage the full capabilities of [SendGrid's V3 API](htt
 Use the SPM string to easily include the dependendency in your `Package.swift` file
 
 ```swift
-.package(url: "https://github.com/vapor-community/sendgrid.git", from: "4.0.0")
+.package(url: "https://github.com/vapor-community/sendgrid.git", from: "6.0.0-rc.1")
 ```
 
 and add it to your target's dependencies:
