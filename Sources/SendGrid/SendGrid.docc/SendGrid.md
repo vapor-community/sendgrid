@@ -20,7 +20,7 @@ Usage in a route closure would be as followed:
 import SendGrid
 
 let email = SendGridEmail(…)
-try await req.sendgrid.client.send(email)
+try await req.sendgrid.client.send(email: email)
 ```
 
 ### Error handling
@@ -31,7 +31,7 @@ Simply ensure you catch errors thrown like any other throwing function.
 
 ```swift
 do {
-    try await req.sendgrid.client.send(email)
+    try await req.sendgrid.client.send(email: email)
 } catch let error as SendGridError {
     req.logger.error("\(error.errors)")
 }
