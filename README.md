@@ -20,20 +20,20 @@
 
 📧 SendGrid library for the Vapor web framework, based on [SendGridKit](https://github.com/vapor-community/sendgrid-kit).
 
-Send simple emails, or leverage the full capabilities of [SendGrid's V3 API](https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send).
+Send simple emails or leverage the full capabilities of [SendGrid's V3 API](https://www.twilio.com/docs/sendgrid/api-reference/mail-send/mail-send).
 
 ### Getting Started
 
 Use the SPM string to easily include the dependendency in your `Package.swift` file
 
 ```swift
-.package(url: "https://github.com/vapor-community/sendgrid.git", from: "6.0.0-rc.1")
+.package(url: "https://github.com/vapor-community/sendgrid.git", from: "6.0.0"),
 ```
 
 and add it to your target's dependencies:
 
 ```swift
-.product(name: "SendGrid", package: "sendgrid")
+.product(name: "SendGrid", package: "sendgrid"),
 ```
 
 ## Overview
@@ -63,6 +63,8 @@ If the request to the API failed for any reason a `SendGridError` is thrown, whi
 Simply ensure you catch errors thrown like any other throwing function.
 
 ```swift
+import SendGrid
+
 do {
     try await req.sendgrid.client.send(email: email)
 } catch let error as SendGridError {
