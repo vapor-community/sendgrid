@@ -54,6 +54,13 @@ struct SendGridTests {
             do {
                 try await app.sendgrid.client.send(email: email)
             } catch {}
+
+            // Change the client and try sending again
+            app.sendgrid.client = .init(httpClient: app.http.client.shared, apiKey: "new-api-key")
+
+            do {
+                try await app.sendgrid.client.send(email: email)
+            } catch {}
         }
     }
 }

@@ -16,8 +16,15 @@ extension Application {
             private let sendableBox: NIOLockedValueBox<SendableBox>
 
             var client: SendGridClient {
-                self.sendableBox.withLockedValue { box in
-                    box.client
+                get {
+                    self.sendableBox.withLockedValue { box in
+                        box.client
+                    }
+                }
+                set {
+                    self.sendableBox.withLockedValue { box in
+                        box.client = newValue
+                    }
                 }
             }
 
@@ -38,7 +45,8 @@ extension Application {
         }
 
         public var client: SendGridClient {
-            self.storage.client
+            get { self.storage.client }
+            nonmutating set { self.storage.client = newValue }
         }
 
         private var storage: Storage {
