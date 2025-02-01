@@ -46,7 +46,7 @@ extension Application {
 
         public var client: SendGridClient {
             get { self.storage.client }
-            set { self.storage.client = newValue }
+            nonmutating set { self.storage.client = newValue }
         }
 
         private var storage: Storage {

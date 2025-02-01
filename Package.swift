@@ -10,8 +10,8 @@ let package = Package(
         .library(name: "SendGrid", targets: ["SendGrid"])
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "3.0.0-rc.1"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.112.0"),
+        .package(url: "https://github.com/vapor-community/sendgrid-kit.git", from: "3.0.0"),
     ],
     targets: [
         .target(
@@ -26,7 +26,7 @@ let package = Package(
             name: "SendGridTests",
             dependencies: [
                 .target(name: "SendGrid"),
-                .product(name: "XCTVapor", package: "vapor"),
+                .product(name: "VaporTesting", package: "vapor"),
             ],
             swiftSettings: swiftSettings
         ),
